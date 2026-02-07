@@ -1,0 +1,104 @@
+---
+description: Clean code principles – readable, maintainable code that any team member can understand and extend
+alwaysApply: true
+---
+
+# Clean Code
+
+Code is clean when it can be understood easily by everyone on the team. Clean code can be read and enhanced by a developer other than its original author. With understandability come readability, changeability, extensibility and maintainability.
+
+## General Rules
+
+1. **Follow standard conventions** for the language and project.
+2. **KISS** – Keep it simple. Simpler is always better; reduce complexity as much as possible.
+3. **Boy scout rule** – Leave the codebase cleaner than you found it.
+4. **Find root cause** – Always track down and fix the root cause of a problem, not just symptoms.
+
+## Design Rules
+
+1. Keep configurable data at high levels.
+2. Prefer **polymorphism** to long `if/else` or `switch/case` chains.
+3. Separate multi-threading/concurrency code from business logic.
+4. Avoid over-configurability; don’t make everything configurable “just in case.”
+5. Use **dependency injection** so dependencies are explicit and testable.
+6. **Law of Demeter** – A class should know only its direct dependencies (don’t chain `.getX().getY().doZ()`).
+
+## Understandability
+
+1. **Be consistent** – Do similar things the same way everywhere.
+2. Use **explanatory variables** – Names that make the intent clear.
+3. **Encapsulate boundary conditions** – Put edge-case handling in one place.
+4. Prefer **dedicated value objects** over primitive types where it clarifies meaning.
+5. **Avoid logical dependency** – Methods should not rely on hidden state or call order in the same class.
+6. **Avoid negative conditionals** – Prefer `if (isValid)` over `if (!isInvalid)` when it reads better.
+
+## Names
+
+1. **Descriptive and unambiguous** – Names should reveal intent.
+2. **Meaningful distinction** – Don’t use `a1`, `a2` or `data1`, `data2`.
+3. **Pronounceable** – You should be able to say them out loud.
+4. **Searchable** – Avoid single-letter names except very local loop counters.
+5. **Replace magic numbers** with named constants.
+6. **No encodings** – Don’t use prefixes or type info in names (e.g. no `strName`, `m_count`).
+
+## Functions
+
+1. **Small** – Do one thing and do it well.
+2. **One thing** – If you can’t describe it in a short sentence, split it.
+3. **Descriptive names** – Name reflects what it does.
+4. **Fewer arguments** – Prefer 0–2; use objects if you need more.
+5. **No side effects** – Don’t change hidden state or do more than the name implies.
+6. **No flag arguments** – Split into separate methods instead of `doThing(flag)`.
+
+## Comments
+
+1. **Explain in code first** – Clear names and structure over comments.
+2. Don’t be redundant – Don’t restate what the code obviously does.
+3. Don’t add obvious noise.
+4. Don’t use closing-brace comments (`// end for`).
+5. **Don’t comment out code** – Delete it; version control keeps history.
+6. Use comments to explain **intent**, **clarify** non-obvious code, or **warn** of consequences.
+
+## Source Code Structure
+
+1. **Separate concepts vertically** – Different ideas in different sections.
+2. **Related code vertically dense** – Keep related lines together.
+3. **Declare variables close to usage** – Narrow scope.
+4. **Dependent functions close** – Caller above or near callee.
+5. **Similar functions close** – Group by behavior.
+6. **Order functions in downward direction** – High-level first, details below.
+7. **Keep lines short** – Prefer wrapping over very long lines.
+8. **Don’t use horizontal alignment** of assignments (e.g. padding with spaces).
+9. **Use whitespace** to group related things and separate weakly related ones.
+10. **Don’t break indentation** – Keep a clear hierarchy.
+
+## Objects and Data Structures
+
+1. **Hide internal structure** – Expose only what callers need.
+2. Prefer **data structures** (e.g. DTOs) when you mainly have data; use **objects** when behavior is central.
+3. **Avoid hybrids** – Don’t mix “half object, half data” in one type.
+4. **Small** – Few responsibilities.
+5. **One thing** – Single reason to change.
+6. **Few instance variables** – If there are many, consider splitting.
+7. **Base classes know nothing about derivatives** – No downcasting or type checks on subclasses.
+8. **Prefer many small functions** over passing code (e.g. callbacks) to select behavior.
+9. **Prefer non-static methods** to static when you have or can inject state.
+
+## Tests
+
+1. **One assert per test** – One concept per test.
+2. **Readable** – Test name and body should document expected behavior.
+3. **Fast** – So they can run often.
+4. **Independent** – No order dependency; any subset can run.
+5. **Repeatable** – Same result every time; no flake.
+
+## Code Smells to Avoid
+
+- **Rigidity** – Small change forces many follow-up changes.
+- **Fragility** – One change breaks unrelated areas.
+- **Immobility** – Code can’t be reused elsewhere without high risk or effort.
+- **Needless complexity** – Over-engineering.
+- **Needless repetition** – DRY; abstract when it helps.
+- **Opacity** – Code is hard to understand.
+
+When you see these, refactor toward the rules above.
