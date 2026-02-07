@@ -6,6 +6,8 @@ This document is the canonical source of truth for the core architecture, state 
 
 Every request for a resource (secret, package, or command) follows this canonical state machine.
 
+*   **Note on v0 Package Installs**: For the initial package management focus, these states map as follows: `TOKEN_ISSUED` corresponds to the generation of a short-lived grant for the backend to perform the installation. `EXECUTED` signifies the successful installation into the scoped environment and the creation of a long-term `Lease` object in the database. `COMPLETED` / `EXPIRED` on the `Lease` object triggers the cleanup of the scoped environment.
+
 ### States
 
 *   **RECEIVED**: The initial state when a request is first received by the daemon.
@@ -86,21 +88,22 @@ The system enforces a strict separation between the **Authorization Layer** and 
 
 ### Capability Grant (Token) Format
 
-The token will be a JSON Web Token (JWT) with the following claims in its payload:
+The token will be a JSON Web Token (JWT) with the following claims in its payload, representing a grant to perform a specific backend operation. For package installs, this token authorizes the one-time execution of the installation command.
 
 ```json
 {
   "iss": "leashd",                          // Issuer (the daemon)
   "sub": "instance:openclaw-prod-123",      // Subject (the agent instance)
-  "aud": "leash-backend:secrets",           // Audience (the specific backend)
+  "aud": "leash-backend:packages",          // Audience (the package backend)
   "jti": "uuid-v4-string",                  // JWT ID (for one-time use)
   "iat": 1675790000,                        // Issued At
   "nbf": 1675790000,                        // Not Before
-  "exp": 1675793600,                        // Expires At (iat + TTL)
-  "resource_type": "secret",                // Type of resource
-  "resource_id": "aws/prod/billing-api-key",// The specific resource identifier
-  "operation": "read",                      // The permitted operation
-  "policy_id": "policy-prod-aws-keys",      // The policy that approved this
+  "exp": 1675790300,                        // Short-lived expiry for execution
+  "resource_type": "package",               // Type of resource
+  "resource_id": "pip:requests==2.32.3",    // The specific resource identifier
+  "scope_path": "/path/to/agent/.venv",     // The isolated environment for installation
+  "operation": "install",                   // The permitted operation
+  "policy_id": "policy-pip-requests",       // The policy that approved this
   "approval_id": "approval-uuid-xyz"        // (Optional) ID of the manual approval
 }
 ```
@@ -128,12 +131,19 @@ The audit log is the immutable system of record for all events.
 *   **Immutability Mechanism**: We will use **hash chaining**. An `integrity` table in SQLite will store a chain of hashes. Each entry will be a hash of the current audit event combined with the hash of the previous entry, creating a tamper-resistant ledger.
 *   **Export Format**: For shipping and archival, logs can be exported as **JSON Lines** (`.jsonl`), with each line representing a single audit event.
 
-## 6. Privilege Separation
+## 6. Privilege Separation & Client/Daemon Architecture
 
-The system will enforce strict privilege separation for sensitive operations.
+The system is split into two primary components to enforce privilege separation:
 
-*   **Daemon (`leashd`)**: Runs as a **non-privileged user** at all times. It handles authorization but never executes privileged operations itself.
-*   **Privileged Helper**: A minimal, securely-installed helper process will be introduced. This helper runs as root (or with specific `sudo` permissions) and exposes a very small, non-networked API (e.g., a Unix socket) that accepts only pre-defined commands from `leashd` (e.g., `install_package(name, version)`, `run_audited_sudo(command_hash)`). This drastically reduces the attack surface of privileged code.
+*   **Client (`leash`)**: The client application that is intended to be installed **inside an agent's sandbox**. It is considered untrusted. Its only role is to formulate and send signed gRPC requests to the daemon via a Unix Domain Socket.
+*   **Daemon (`leashd`)**: The trusted authority that runs as a user-level daemon **outside the agent sandbox**. It is responsible for:
+    *   Policy evaluation
+    *   Handling approval workflows
+    *   Issuing capability grants (tokens)
+    *   Calling backend execution layers
+    *   Managing leases
+    *   Writing to the audit log
+*   **Privileged Helper**: For operations that require root (e.g., `brew` installs, if implemented), `leashd` will communicate with a minimal, securely-installed helper process. The daemon itself remains non-privileged.
 
 ## 7. Backend Contract
 
@@ -145,18 +155,55 @@ All backends (plugins) for secrets, packages, or commands MUST adhere to a stric
 *   **Capability Declaration**: Each backend will declare its capabilities (e.g., `supports_ttl`, `supports_delete`). The policy engine will use this to validate policies.
 *   **Error Taxonomy**: Backends must return errors from a pre-defined set (e.g., `ResourceNotFound`, `PermissionDenied`, `BackendMisconfigured`) so that the core system can react appropriately.
 
+### Additional Contract for Package Manager Backends
+
+*   **No Shell Execution**: Backends MUST NOT use a shell (`/bin/sh -c ...`) to invoke a package manager. They must use direct process execution (e.g., `execve`) with a fixed path to the manager binary and structured arguments (`argv`).
+*   **Version and Hash Pinning**: The backend MUST install the exact version of the package that was approved. If possible, it should verify the package against a provided hash. The resolved version and hash MUST be returned to the daemon to be stored in the `Lease` object.
+*   **Lifecycle Script Control**: Backends for managers like `npm` MUST provide a mechanism to disable or gate post-install/lifecycle scripts by default. Execution of these scripts should be an explicit, policy-controlled capability.
+*   **Network Egress Policy**: Backends MUST allow the daemon to configure the registry or index URL (e.g., `pypi.org`), and policies should be able to restrict installations to approved registries.
+
 ## 8. API Contract
 
 The daemon exposes a core API for clients.
 
 *   **Transport**: gRPC will be the primary transport for its performance and schema-driven nature.
-*   **Endpoints**:
-    *   `RequestService.RequestSecret(Request)`
-    *   `RequestService.RequestPackage(Request)`
-    *   `RequestService.RequestCommand(Request)`
+*   **Endpoints (v0 Focus: Package Installation)**:
+    *   `RequestService.RequestPackage(Request)`: The primary endpoint for v0.
     *   `ApprovalService.Approve(ApprovalResponse)`
     *   `AuditService.Query(AuditQuery)`
     *   `HealthService.Check(HealthRequest)`
-*   **Schemas**: All requests and responses will be defined via Protocol Buffers. IDs (`request_id`, `approval_id`, `token_id`) will be stable UUIDs.
+    *   *Other endpoints like `RequestSecret` and `RequestCommand` are deferred for future versions.*
+*   **Schemas**: All requests and responses will be defined via Protocol Buffers.
+    *   The `RequestPackage` message will be structured with fields for `manager` (e.g., `pip`, `npm`), `package` (e.g., `requests==2.32.3`), `reason` (string), `ttl` (duration), and `scope_path` (string).
+    *   IDs (`request_id`, `approval_id`, `lease_id`) will be stable UUIDs.
 *   **Error Model**: gRPC status codes will be used to signal the outcome class (e.g., `PERMISSION_DENIED`, `INVALID_ARGUMENT`, `UNAVAILABLE`). Custom error details will be provided in the response payload.
 *   **Idempotency**: `Request` messages will contain a unique `request_id`. Clients can safely retry requests with the same `id` without causing duplicate operations. The daemon will track `request_id`s and return the original result for retried requests.
+
+## 9. Scoped Installation Environments
+
+To ensure that package installations are reversible and do not contaminate the global system state, all installations MUST occur within a **scoped, isolated environment**.
+
+*   **Principle**: Leash AI does not promise to "uninstall" a package from a shared environment. Instead, it promises to **delete the entire isolated environment** once the lease expires.
+*   **Supported Scopes (v0):**
+    *   **Python:** A dedicated virtual environment (`.venv`) created within the agent's sandbox or project directory. The `leash` client will be responsible for reporting the path to this `venv`.
+    *   **Node.js:** A project-local `node_modules` directory. The installation is scoped to the `package.json` in the agent's working directory.
+*   **Global Installs**: Global installations (`pip install -g`, `npm install -g`, installing to system-wide `brew`) are **strictly forbidden** by default policy and should always be considered a high-risk operation requiring special privilege.
+
+## 10. Lease Management
+
+For package installations, a "token" is a long-lived **Lease** object that represents the approved presence of a package in a scoped environment.
+
+*   **Lease Object**: When a package request is approved, the daemon creates a `Lease` record in the database.
+*   **Lease Schema**:
+    *   `lease_id` (Primary Key)
+    *   `request_id` (Foreign Key to the original request)
+    *   `status`: `ACTIVE`, `EXPIRED`, `REVOKED`
+    *   `manager`: `pip`, `npm`, `brew`
+    *   `package_name`: e.g., `requests`
+    *   `package_version`: The exact version resolved during installation (e.g., `2.32.3`)
+    *   `scope_path`: The absolute path to the scoped environment (e.g., `/path/to/project/.venv`).
+    *   `expires_at`: The timestamp when this lease expires.
+*   **Lifecycle**:
+    1.  **Creation**: A `Lease` is created with `status: ACTIVE` upon successful installation.
+    2.  **Reclamation**: A background task in `leashd` periodically scans for leases where `expires_at` is in the past.
+    3.  **Execution**: For expired leases, the daemon executes the reclamation action (e.g., `rm -rf /path/to/project/.venv`) and updates the lease `status` to `EXPIRED`.
