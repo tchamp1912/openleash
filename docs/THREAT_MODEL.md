@@ -14,7 +14,7 @@ This document identifying security threats to OpenLeash and describes mitigation
 
 ## Trust Boundaries
 
-### 🌉 Boundary 1: The Sandbox Gap (Agent ↔ Daemon)
+### Boundary 1: The Sandbox Gap (Agent ↔ Daemon)
 **Crossing**: gRPC requests over a Unix Domain Socket (`/tmp/openleash.sock`).
 
 **Threats**:
@@ -27,7 +27,7 @@ This document identifying security threats to OpenLeash and describes mitigation
 - **Confinement**: Agent runs in a macOS Seatbelt profile that denies all syscalls except basic UDS IPC.
 - **Mandatory Rationale**: Daemon rejects any request without a non-empty rationale.
 
-### 🛡️ Boundary 2: Daemon ↔ System Backends
+### Boundary 2: Daemon ↔ System Backends
 **Crossing**: Internal calls to Keychain, Pip, NPM, Brew, and Shell.
 
 **Threats**:
@@ -67,8 +67,8 @@ This document identifying security threats to OpenLeash and describes mitigation
 
 | Requirement | Status | Implementation |
 | :--- | :---: | :--- |
-| **Sandbox Isolation** | ✅ | Tiered macOS Seatbelt profiles. |
-| **Immutable Audit** | ✅ | Hash-chained SHA-256 ledger in SQLite. |
-| **Least Privilege** | ✅ | Task-scoped venvs and portable tool instances. |
-| **Human Approval** | ✅ | Mandatory intervention for high-priority patterns. |
-| **Input Validation** | ✅ | Regex-based policy matching. |
+| **Sandbox Isolation** | Complete | Tiered macOS Seatbelt profiles. |
+| **Immutable Audit** | Complete | Hash-chained SHA-256 ledger in SQLite. |
+| **Least Privilege** | Complete | Task-scoped venvs and portable tool instances. |
+| **Human Approval** | Complete | Mandatory intervention for high-priority patterns. |
+| **Input Validation** | Complete | Regex-based policy matching. |

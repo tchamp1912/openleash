@@ -2,13 +2,13 @@
 
 Permission and access management for AI agents. Keep your AI agent secure—built for [OpenClaw](https://github.com/openclaw/openclaw) with IT-style access controls.
 
-## 🎯 Overview
+## Overview
 
 OpenLeash provides a secure, auditable system for managing what AI agents can access:
 
-- **🔐 Secrets**: API keys and credentials brokered via macOS Keychain.
-- **📦 Packages**: Scoped package installation (pip, npm, brew) with session-aware tasks.
-- **⚡ Execution**: Agents execute commands directly in sandbox using PATH provided by daemon.
+- **Secrets**: API keys and credentials brokered via macOS Keychain.
+- **Packages**: Scoped package installation (pip, npm, brew) with session-aware tasks.
+- **Execution**: Agents execute commands directly in sandbox using PATH provided by daemon.
 
 ### Why This Exists
 
@@ -20,7 +20,7 @@ AI agents need access to tools and secrets to complete missions. Giving unrestri
 4. **Human-in-the-Loop**: Seamless approval workflows via CLI and Telegram.
 5. **Audit Ledger**: A hash-chained (SHA-256) immutable record of all system actions.
 
-## 🏗️ Architecture
+## Architecture
 
 The system is implemented as a **Rust workspace** with a **gRPC API**. The daemon (`openleashd`) hosts the services; the CLI (`openleash`) and other clients use the `openleash-client` crate to call them.
 
@@ -59,7 +59,7 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 📦 Crate Layout
+## Crate Layout
 
 | Crate | Role |
 |-------|------|
@@ -72,7 +72,7 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
 | **openleashd** | The trusted daemon; manages the state machine and brokered execution. |
 | **openleash** | Management CLI for initialization, approvals, and manual requests. |
 
-## 🔌 gRPC API
+## gRPC API
 
 ### RequestService
 - `RequestPackage`: Install a package into a task-scoped environment.
@@ -92,7 +92,7 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
 ### AuditService
 - `QueryAuditLogs`: Retrieve the history of all brokered actions.
 
-## 🔒 Security & Privilege Model
+## Security & Privilege Model
 
 OpenLeash bridges the **Sandbox Gap**. Agents run in restricted contexts (e.g. macOS Seatbelt) and "request" capabilities from the non-sandboxed `openleashd`.
 

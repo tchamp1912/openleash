@@ -2,7 +2,7 @@
 
 OpenLeash is designed with a highly modular, trait-based architecture. You can easily extend the system by adding new resource backends or approval methods.
 
-## 🏗️ Adding a New Resource Backend
+## Adding a New Resource Backend
 
 All resources are abstracted behind traits in the `openleash-backend` crate.
 
@@ -29,7 +29,7 @@ pub trait SecretBackend: Send + Sync {
 }
 ```
 
-## 📩 Adding a New Approval Method
+## Adding a New Approval Method
 
 Human-in-the-loop notifications are handled by the `ApprovalBackend` trait.
 
@@ -42,13 +42,13 @@ pub trait ApprovalBackend: Send + Sync {
 
 Example implementation: `openleash-backend-telegram`. You could add `openleash-backend-slack` or `openleash-backend-email`.
 
-## 🛠️ Registering Your Extension
+## Registering Your Extension
 
 Once you've built your crate:
 1.  Add it to the `openleashd` `Cargo.toml`.
 2.  Update the initialization logic in `crates/openleashd/src/main.rs` to include your new backend based on the `LeashConfig`.
 
-## 🧪 Testing Extensions
+## Testing Extensions
 
 We recommend following the existing pattern:
 1.  Create a `tests/` directory in your crate.

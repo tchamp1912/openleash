@@ -2,7 +2,7 @@
 
 OpenLeash is designed to be exposed directly to AI agents as a set of **CLI Tools**. Instead of writing code to call Leash, you describe the `openleash` commands to your LLM (using Tool Use / Function Calling) and allow the agent to invoke them directly.
 
-## 🛠️ The "Leash" Toolset
+## The "Leash" Toolset
 
 Expose these three commands to your agent's tool environment:
 
@@ -23,7 +23,7 @@ Expose these three commands to your agent's tool environment:
 
 ---
 
-## 🤖 Example LLM Prompt / Tool Definition
+## Example LLM Prompt / Tool Definition
 
 When configuring your agent, define the tool like this:
 
@@ -44,7 +44,7 @@ When configuring your agent, define the tool like this:
 }
 ```
 
-## 🔄 The Agent Workflow (No SDK)
+## The Agent Workflow (No SDK)
 
 1.  **User**: "Scrape this website and save it to a CSV."
 2.  **Agent**: *Checks environment, notices `pandas` is missing.*
@@ -53,5 +53,5 @@ When configuring your agent, define the tool like this:
 5.  **Agent**: *Invokes Tool* → `eval $(openleash run --task-id <ID>)` then executes `python3 scrape.py` directly
 6.  **Agent**: *Invokes Tool* → `openopenleash task end --task-id <ID>`
 
-## 🔒 Security Note
+## Security Note
 Because the agent is running inside a **macOS Sandbox** (defined in `agent.sb`), it cannot run `pip install` or access secrets directly. It **must** use the `openleash` CLI to request packages and secrets from the daemon. Once packages are installed, the agent executes commands directly in its sandbox using the PATH provided by `openopenleash run`. This ensures resource access is policy-checked and audited, while execution happens in the sandbox without privilege escalation.

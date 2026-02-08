@@ -12,14 +12,14 @@ We love your input! We want to make contributing to OpenLeash as easy and transp
 
 We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
 
-### 🛠 Building from source
+### Building from source
 
 1.  Clone the repo.
 2.  Install dependencies (Rust, Protobuf, macOS for Keychain).
 3.  Build: `cargo build`.
 4.  Run tests: `cargo test`.
 
-### 🧪 Testing
+### Testing
 
 Please ensure that your PR includes tests if you are adding new logic or backends. 
 - Unit tests go in the same crate as the implementation.
@@ -33,10 +33,10 @@ Please ensure that your PR includes tests if you are adding new logic or backend
 4.  Ensure the test suite passes.
 5.  Make sure your code lints (`cargo fmt` and `cargo clippy`).
 
-## 🛡 Security
+## Security
 
 If you find a security vulnerability, please do **not** open a public issue. See [SECURITY.md](SECURITY.md) for instructions on how to report vulnerabilities privately.
 
-## 📜 License
+## License
 
 By contributing, you agree that your contributions will be licensed under its Apache License 2.0.

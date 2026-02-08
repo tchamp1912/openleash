@@ -2,7 +2,7 @@
 
 This document outlines a high-level plan for implementing the OpenLeash project in Rust. The plan is broken into phases and parallel workstreams, designed to allow multiple agents to tackle different components simultaneously.
 
-All implementation details MUST adhere to the specifications laid out in `CORE_SPEC.md` and the conceptual guides in the `docs/` directory.
+All implementation details MUST adhere to the specifications laid out in [CORE_SPEC.md](CORE_SPEC.md) and the conceptual guides in the `docs/` directory.
 
 ## v0 Scope: Scoped Package Management
 
@@ -24,7 +24,7 @@ This phase is foundational and must be completed first, but the two workstreams 
 *   **Agent Focus:** Data Structures Specialist
 *   **Task:** Create a new crate, `openleash-core`, that defines all shared data structures and domain types.
 *   **Outputs:**
-    *   Rust structs for `Policy`, `ApprovalRequest`, `Lease` etc. based on `CORE_SPEC.md`.
+    *   Rust structs for `Policy`, `ApprovalRequest`, `Lease` etc. based on [CORE_SPEC.md](CORE_SPEC.md).
     *   The primary `CapabilityGrant` (JWT claims) struct.
     *   The `AuditEvent` struct.
     *   Shared error types and enums (e.g., `ResourceType`, `RequestState`, `PackageManager`).

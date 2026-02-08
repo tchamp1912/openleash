@@ -133,10 +133,10 @@ Create the permission management system for [OpenClaw](https://github.com/opencl
 
 ### Anti-Goals
 
-- ❌ Not a complete IAM solution (no user management)
-- ❌ Not a secret generation service (only access management)
-- ❌ Not a monitoring/alerting platform (provides data, not dashboards)
-- ❌ Not agent-specific (should work with any AI agent)
+- [NO] Not a complete IAM solution (no user management)
+- [NO] Not a secret generation service (only access management)
+- [NO] Not a monitoring/alerting platform (provides data, not dashboards)
+- [NO] Not agent-specific (should work with any AI agent)
 
 ---
 
@@ -395,124 +395,124 @@ Create the permission management system for [OpenClaw](https://github.com/opencl
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| FR-1.1 | Support macOS Keychain as secret backend | P0 | ✅ Designed |
-| FR-1.2 | Support Linux Secret Service (GNOME Keyring) | P0 | 🔴 Not Started |
-| FR-1.3 | Support HashiCorp Vault | P1 | 🔴 Not Started |
-| FR-1.4 | Support AWS Secrets Manager | P1 | 🔴 Not Started |
-| FR-1.5 | Support Azure Key Vault | P2 | 🔴 Not Started |
-| FR-1.6 | Secret retrieval with rationale | P0 | ✅ Designed |
-| FR-1.7 | Time-limited secret access (TTL) | P0 | ✅ Designed |
-| FR-1.8 | Secret access tokens (single-use) | P0 | ✅ Designed |
-| FR-1.9 | Secret rotation support | P2 | 🔴 Not Started |
-| FR-1.10 | Secret versioning | P2 | 🔴 Not Started |
+| FR-1.1 | Support macOS Keychain as secret backend | P0 | [YES] Designed |
+| FR-1.2 | Support Linux Secret Service (GNOME Keyring) | P0 | [NOT_STARTED] Not Started |
+| FR-1.3 | Support HashiCorp Vault | P1 | [NOT_STARTED] Not Started |
+| FR-1.4 | Support AWS Secrets Manager | P1 | [NOT_STARTED] Not Started |
+| FR-1.5 | Support Azure Key Vault | P2 | [NOT_STARTED] Not Started |
+| FR-1.6 | Secret retrieval with rationale | P0 | [YES] Designed |
+| FR-1.7 | Time-limited secret access (TTL) | P0 | [YES] Designed |
+| FR-1.8 | Secret access tokens (single-use) | P0 | [YES] Designed |
+| FR-1.9 | Secret rotation support | P2 | [NOT_STARTED] Not Started |
+| FR-1.10 | Secret versioning | P2 | [NOT_STARTED] Not Started |
 
 #### FR-2: Package Management
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| FR-2.1 | Support Homebrew package manager | P0 | ✅ Designed |
-| FR-2.2 | Support APT package manager | P0 | 🔴 Not Started |
-| FR-2.3 | Support DNF/YUM package manager | P1 | 🔴 Not Started |
-| FR-2.4 | Support Snap packages | P1 | 🔴 Not Started |
-| FR-2.5 | Support Chocolatey (Windows) | P2 | 🔴 Not Started |
-| FR-2.6 | Temporary package installation | P0 | ✅ Designed |
-| FR-2.7 | Automatic package removal | P0 | ✅ Designed |
-| FR-2.8 | Package version pinning | P1 | 🔴 Not Started |
-| FR-2.9 | Package dependency tracking | P2 | 🔴 Not Started |
-| FR-2.10 | Package installation quota per agent | P2 | 🔴 Not Started |
+| FR-2.1 | Support Homebrew package manager | P0 | [YES] Designed |
+| FR-2.2 | Support APT package manager | P0 | [NOT_STARTED] Not Started |
+| FR-2.3 | Support DNF/YUM package manager | P1 | [NOT_STARTED] Not Started |
+| FR-2.4 | Support Snap packages | P1 | [NOT_STARTED] Not Started |
+| FR-2.5 | Support Chocolatey (Windows) | P2 | [NOT_STARTED] Not Started |
+| FR-2.6 | Temporary package installation | P0 | [YES] Designed |
+| FR-2.7 | Automatic package removal | P0 | [YES] Designed |
+| FR-2.8 | Package version pinning | P1 | [NOT_STARTED] Not Started |
+| FR-2.9 | Package dependency tracking | P2 | [NOT_STARTED] Not Started |
+| FR-2.10 | Package installation quota per agent | P2 | [NOT_STARTED] Not Started |
 
 #### FR-3: CLI Command Execution
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| FR-3.1 | Execute commands without shell | P0 | ✅ Designed |
-| FR-3.2 | Capture stdout/stderr | P0 | ✅ Designed |
-| FR-3.3 | Command timeout enforcement | P0 | ✅ Designed |
-| FR-3.4 | Sudo command support | P0 | ✅ Designed |
-| FR-3.5 | Environment variable injection | P1 | ✅ Designed |
-| FR-3.6 | Working directory specification | P1 | ✅ Designed |
-| FR-3.7 | Command output streaming | P2 | 🔴 Not Started |
-| FR-3.8 | Sandboxed execution (Docker/containers) | P2 | 🔴 Not Started |
-| FR-3.9 | Remote command execution (SSH) | P2 | 🔴 Not Started |
-| FR-3.10 | Command templates/macros | P3 | 🔴 Not Started |
+| FR-3.1 | Execute commands without shell | P0 | [YES] Designed |
+| FR-3.2 | Capture stdout/stderr | P0 | [YES] Designed |
+| FR-3.3 | Command timeout enforcement | P0 | [YES] Designed |
+| FR-3.4 | Sudo command support | P0 | [YES] Designed |
+| FR-3.5 | Environment variable injection | P1 | [YES] Designed |
+| FR-3.6 | Working directory specification | P1 | [YES] Designed |
+| FR-3.7 | Command output streaming | P2 | [NOT_STARTED] Not Started |
+| FR-3.8 | Sandboxed execution (Docker/containers) | P2 | [NOT_STARTED] Not Started |
+| FR-3.9 | Remote command execution (SSH) | P2 | [NOT_STARTED] Not Started |
+| FR-3.10 | Command templates/macros | P3 | [NOT_STARTED] Not Started |
 
 #### FR-4: Policy Engine
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| FR-4.1 | YAML-based policy configuration | P0 | ✅ Designed |
-| FR-4.2 | Regex pattern matching for resources | P0 | ✅ Designed |
-| FR-4.3 | Time-based access windows | P0 | ✅ Designed |
-| FR-4.4 | Auto-approval patterns | P0 | ✅ Designed |
-| FR-4.5 | Manual approval requirements | P0 | ✅ Designed |
-| FR-4.6 | Policy priority/precedence | P0 | ✅ Designed |
-| FR-4.7 | Deny-by-default behavior | P0 | ✅ Designed |
-| FR-4.8 | Rationale validation (length, patterns) | P0 | ✅ Designed |
-| FR-4.9 | Policy dry-run/testing mode | P1 | 🔴 Not Started |
-| FR-4.10 | Policy impact analysis | P2 | 🔴 Not Started |
-| FR-4.11 | Policy inheritance/templates | P2 | 🔴 Not Started |
-| FR-4.12 | Dynamic policy evaluation | P2 | 🔴 Not Started |
+| FR-4.1 | YAML-based policy configuration | P0 | [YES] Designed |
+| FR-4.2 | Regex pattern matching for resources | P0 | [YES] Designed |
+| FR-4.3 | Time-based access windows | P0 | [YES] Designed |
+| FR-4.4 | Auto-approval patterns | P0 | [YES] Designed |
+| FR-4.5 | Manual approval requirements | P0 | [YES] Designed |
+| FR-4.6 | Policy priority/precedence | P0 | [YES] Designed |
+| FR-4.7 | Deny-by-default behavior | P0 | [YES] Designed |
+| FR-4.8 | Rationale validation (length, patterns) | P0 | [YES] Designed |
+| FR-4.9 | Policy dry-run/testing mode | P1 | [NOT_STARTED] Not Started |
+| FR-4.10 | Policy impact analysis | P2 | [NOT_STARTED] Not Started |
+| FR-4.11 | Policy inheritance/templates | P2 | [NOT_STARTED] Not Started |
+| FR-4.12 | Dynamic policy evaluation | P2 | [NOT_STARTED] Not Started |
 
 #### FR-5: Approval Workflow
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| FR-5.1 | Human approval for sensitive operations | P0 | ✅ Designed |
-| FR-5.2 | Approval context display (rationale, agent, resource) | P0 | ✅ Designed |
-| FR-5.3 | Approval timeout | P0 | ✅ Designed |
-| FR-5.4 | Multiple approvers support | P1 | 🔴 Not Started |
-| FR-5.5 | Approval delegation | P2 | 🔴 Not Started |
-| FR-5.6 | Approval notifications (email) | P1 | 🔴 Not Started |
-| FR-5.7 | Approval notifications (Slack) | P1 | 🔴 Not Started |
-| FR-5.8 | Approval via CLI | P1 | ✅ Designed |
-| FR-5.9 | Approval via Web UI | P1 | 🔴 Not Started |
-| FR-5.10 | Approval via API | P1 | 🔴 Not Started |
-| FR-5.11 | Conditional approval (e.g., require 2 approvers for prod) | P2 | 🔴 Not Started |
+| FR-5.1 | Human approval for sensitive operations | P0 | [YES] Designed |
+| FR-5.2 | Approval context display (rationale, agent, resource) | P0 | [YES] Designed |
+| FR-5.3 | Approval timeout | P0 | [YES] Designed |
+| FR-5.4 | Multiple approvers support | P1 | [NOT_STARTED] Not Started |
+| FR-5.5 | Approval delegation | P2 | [NOT_STARTED] Not Started |
+| FR-5.6 | Approval notifications (email) | P1 | [NOT_STARTED] Not Started |
+| FR-5.7 | Approval notifications (Slack) | P1 | [NOT_STARTED] Not Started |
+| FR-5.8 | Approval via CLI | P1 | [YES] Designed |
+| FR-5.9 | Approval via Web UI | P1 | [NOT_STARTED] Not Started |
+| FR-5.10 | Approval via API | P1 | [NOT_STARTED] Not Started |
+| FR-5.11 | Conditional approval (e.g., require 2 approvers for prod) | P2 | [NOT_STARTED] Not Started |
 
 #### FR-6: Audit Logging
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| FR-6.1 | Log all access requests | P0 | ✅ Designed |
-| FR-6.2 | Log all approvals/denials | P0 | ✅ Designed |
-| FR-6.3 | Log all resource access | P0 | ✅ Designed |
-| FR-6.4 | Log policy changes | P0 | ✅ Designed |
-| FR-6.5 | Structured log format (JSON) | P0 | 🔴 Not Started |
-| FR-6.6 | Log immutability (append-only) | P0 | 🔴 Not Started |
-| FR-6.7 | Log retention policy | P1 | 🔴 Not Started |
-| FR-6.8 | Log rotation | P1 | 🔴 Not Started |
-| FR-6.9 | Remote log shipping (syslog) | P1 | 🔴 Not Started |
-| FR-6.10 | Log encryption | P2 | 🔴 Not Started |
-| FR-6.11 | Log integrity verification | P1 | 🔴 Not Started |
-| FR-6.12 | Log query API | P1 | 🔴 Not Started |
-| FR-6.13 | Log export (JSON, CSV) | P1 | ✅ Designed |
+| FR-6.1 | Log all access requests | P0 | [YES] Designed |
+| FR-6.2 | Log all approvals/denials | P0 | [YES] Designed |
+| FR-6.3 | Log all resource access | P0 | [YES] Designed |
+| FR-6.4 | Log policy changes | P0 | [YES] Designed |
+| FR-6.5 | Structured log format (JSON) | P0 | [NOT_STARTED] Not Started |
+| FR-6.6 | Log immutability (append-only) | P0 | [NOT_STARTED] Not Started |
+| FR-6.7 | Log retention policy | P1 | [NOT_STARTED] Not Started |
+| FR-6.8 | Log rotation | P1 | [NOT_STARTED] Not Started |
+| FR-6.9 | Remote log shipping (syslog) | P1 | [NOT_STARTED] Not Started |
+| FR-6.10 | Log encryption | P2 | [NOT_STARTED] Not Started |
+| FR-6.11 | Log integrity verification | P1 | [NOT_STARTED] Not Started |
+| FR-6.12 | Log query API | P1 | [NOT_STARTED] Not Started |
+| FR-6.13 | Log export (JSON, CSV) | P1 | [YES] Designed |
 
 #### FR-7: Client SDK
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| FR-7.1 | Python async SDK | P0 | ✅ Designed |
-| FR-7.2 | Simple API (request_secret, request_package, execute_command) | P0 | ✅ Designed |
-| FR-7.3 | Automatic approval polling | P0 | ✅ Designed |
-| FR-7.4 | Token management | P0 | ✅ Designed |
-| FR-7.5 | Retry logic with backoff | P1 | 🔴 Not Started |
-| FR-7.6 | Circuit breaker pattern | P1 | 🔴 Not Started |
-| FR-7.7 | Request timeout configuration | P1 | 🔴 Not Started |
-| FR-7.8 | Connection pooling | P2 | 🔴 Not Started |
-| FR-7.9 | SDK metrics/telemetry | P2 | 🔴 Not Started |
+| FR-7.1 | Python async SDK | P0 | [YES] Designed |
+| FR-7.2 | Simple API (request_secret, request_package, execute_command) | P0 | [YES] Designed |
+| FR-7.3 | Automatic approval polling | P0 | [YES] Designed |
+| FR-7.4 | Token management | P0 | [YES] Designed |
+| FR-7.5 | Retry logic with backoff | P1 | [NOT_STARTED] Not Started |
+| FR-7.6 | Circuit breaker pattern | P1 | [NOT_STARTED] Not Started |
+| FR-7.7 | Request timeout configuration | P1 | [NOT_STARTED] Not Started |
+| FR-7.8 | Connection pooling | P2 | [NOT_STARTED] Not Started |
+| FR-7.9 | SDK metrics/telemetry | P2 | [NOT_STARTED] Not Started |
 
 #### FR-8: Management CLI
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| FR-8.1 | Daemon start/stop/status | P0 | ✅ Designed |
-| FR-8.2 | Policy add/remove/list | P0 | ✅ Designed |
-| FR-8.3 | Audit log viewing | P0 | ✅ Designed |
-| FR-8.4 | Approval management | P0 | ✅ Designed |
-| FR-8.5 | Usage statistics | P1 | ✅ Designed |
-| FR-8.6 | Health checks | P1 | 🔴 Not Started |
-| FR-8.7 | Configuration management | P1 | 🔴 Not Started |
-| FR-8.8 | Backup/restore | P2 | 🔴 Not Started |
+| FR-8.1 | Daemon start/stop/status | P0 | [YES] Designed |
+| FR-8.2 | Policy add/remove/list | P0 | [YES] Designed |
+| FR-8.3 | Audit log viewing | P0 | [YES] Designed |
+| FR-8.4 | Approval management | P0 | [YES] Designed |
+| FR-8.5 | Usage statistics | P1 | [YES] Designed |
+| FR-8.6 | Health checks | P1 | [NOT_STARTED] Not Started |
+| FR-8.7 | Configuration management | P1 | [NOT_STARTED] Not Started |
+| FR-8.8 | Backup/restore | P2 | [NOT_STARTED] Not Started |
 
 ---
 
@@ -574,53 +574,53 @@ Create the permission management system for [OpenClaw](https://github.com/opencl
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| SR-1.1 | JWT-based instance authentication | P0 | ✅ Designed |
-| SR-1.2 | API key support | P0 | ✅ Designed |
-| SR-1.3 | Certificate-based authentication | P1 | 🔴 Not Started |
-| SR-1.4 | MFA for human approvers | P1 | 🔴 Not Started |
-| SR-1.5 | Token rotation | P1 | 🔴 Not Started |
-| SR-1.6 | Token revocation | P0 | ✅ Designed |
+| SR-1.1 | JWT-based instance authentication | P0 | [YES] Designed |
+| SR-1.2 | API key support | P0 | [YES] Designed |
+| SR-1.3 | Certificate-based authentication | P1 | [NOT_STARTED] Not Started |
+| SR-1.4 | MFA for human approvers | P1 | [NOT_STARTED] Not Started |
+| SR-1.5 | Token rotation | P1 | [NOT_STARTED] Not Started |
+| SR-1.6 | Token revocation | P0 | [YES] Designed |
 
 ### SR-2: Authorization
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| SR-2.1 | Policy-based authorization | P0 | ✅ Designed |
-| SR-2.2 | Deny-by-default | P0 | ✅ Designed |
-| SR-2.3 | Resource-level permissions | P0 | ✅ Designed |
-| SR-2.4 | Time-limited permissions | P0 | ✅ Designed |
-| SR-2.5 | Scope-bound tokens | P0 | ✅ Designed |
+| SR-2.1 | Policy-based authorization | P0 | [YES] Designed |
+| SR-2.2 | Deny-by-default | P0 | [YES] Designed |
+| SR-2.3 | Resource-level permissions | P0 | [YES] Designed |
+| SR-2.4 | Time-limited permissions | P0 | [YES] Designed |
+| SR-2.5 | Scope-bound tokens | P0 | [YES] Designed |
 
 ### SR-3: Data Protection
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| SR-3.1 | TLS 1.3 for all network traffic | P0 | ✅ Designed |
-| SR-3.2 | Secrets never logged | P0 | ✅ Designed |
-| SR-3.3 | Secrets in memory only | P0 | ✅ Designed |
-| SR-3.4 | Secure secret cleanup (zero memory) | P1 | 🔴 Not Started |
-| SR-3.5 | Audit log encryption at rest | P1 | 🔴 Not Started |
-| SR-3.6 | Configuration file encryption | P2 | 🔴 Not Started |
+| SR-3.1 | TLS 1.3 for all network traffic | P0 | [YES] Designed |
+| SR-3.2 | Secrets never logged | P0 | [YES] Designed |
+| SR-3.3 | Secrets in memory only | P0 | [YES] Designed |
+| SR-3.4 | Secure secret cleanup (zero memory) | P1 | [NOT_STARTED] Not Started |
+| SR-3.5 | Audit log encryption at rest | P1 | [NOT_STARTED] Not Started |
+| SR-3.6 | Configuration file encryption | P2 | [NOT_STARTED] Not Started |
 
 ### SR-4: Input Validation
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| SR-4.1 | Path canonicalization | P0 | ✅ Designed |
-| SR-4.2 | Command injection prevention | P0 | ✅ Designed |
-| SR-4.3 | Argument whitelist validation | P0 | ✅ Designed |
-| SR-4.4 | Rationale length/content validation | P0 | ✅ Designed |
-| SR-4.5 | Resource ID validation (no path traversal) | P0 | ✅ Designed |
+| SR-4.1 | Path canonicalization | P0 | [YES] Designed |
+| SR-4.2 | Command injection prevention | P0 | [YES] Designed |
+| SR-4.3 | Argument whitelist validation | P0 | [YES] Designed |
+| SR-4.4 | Rationale length/content validation | P0 | [YES] Designed |
+| SR-4.5 | Resource ID validation (no path traversal) | P0 | [YES] Designed |
 
 ### SR-5: Audit & Compliance
 
 | ID | Requirement | Priority | Status |
 |----|-------------|----------|--------|
-| SR-5.1 | Complete audit trail | P0 | ✅ Designed |
-| SR-5.2 | Immutable logs | P0 | 🔴 Not Started |
-| SR-5.3 | Log integrity verification | P1 | 🔴 Not Started |
-| SR-5.4 | Compliance reporting (SOC 2, HIPAA) | P1 | 🔴 Not Started |
-| SR-5.5 | Audit log retention policy | P1 | 🔴 Not Started |
+| SR-5.1 | Complete audit trail | P0 | [YES] Designed |
+| SR-5.2 | Immutable logs | P0 | [NOT_STARTED] Not Started |
+| SR-5.3 | Log integrity verification | P1 | [NOT_STARTED] Not Started |
+| SR-5.4 | Compliance reporting (SOC 2, HIPAA) | P1 | [NOT_STARTED] Not Started |
+| SR-5.5 | Audit log retention policy | P1 | [NOT_STARTED] Not Started |
 
 ---
 
@@ -747,13 +747,13 @@ This request will timeout in 15 minutes.
 
 | Environment | Supported | Priority | Status |
 |-------------|-----------|----------|--------|
-| **macOS 12+** | ✅ Yes | P0 | ✅ v0.1.0 |
-| **macOS 13+** | ✅ Yes | P0 | ✅ v0.1.0 |
-| **macOS 14+** | ✅ Yes | P0 | ✅ v0.1.0 |
-| Ubuntu 22.04+ | ⏳ Planned | P1 | 🔄 v0.2.0 |
-| Debian 11+ | ⏳ Planned | P1 | 🔄 v0.2.0 |
-| RedHat 8+ | ⏳ Planned | P2 | 🔄 v0.3.0 |
-| Windows 10+ | ⏳ Planned | P2 | 🔄 v0.4.0 |
+| **macOS 12+** | [YES] Yes | P0 | [YES] v0.1.0 |
+| **macOS 13+** | [YES] Yes | P0 | [YES] v0.1.0 |
+| **macOS 14+** | [YES] Yes | P0 | [YES] v0.1.0 |
+| Ubuntu 22.04+ | Planned | P1 | v0.2.0 |
+| Debian 11+ | Planned | P1 | v0.2.0 |
+| RedHat 8+ | Planned | P2 | v0.3.0 |
+| Windows 10+ | Planned | P2 | v0.4.0 |
 
 **Primary Hardware**:
 - Apple Silicon (M1/M2/M3) - Recommended
@@ -819,15 +819,15 @@ This request will timeout in 15 minutes.
 **Goal**: Core functionality, community feedback
 
 **Scope**:
-- ✅ Abstract backend architecture
-- ✅ macOS Keychain backend
-- ✅ Homebrew package backend
-- ✅ Policy engine (YAML)
-- ✅ Client SDK (Python)
-- ✅ Management CLI
-- ✅ Example policies
-- ✅ Comprehensive documentation
-- ✅ Threat model
+- [YES] Abstract backend architecture
+- [YES] macOS Keychain backend
+- [YES] Homebrew package backend
+- [YES] Policy engine (YAML)
+- [YES] Client SDK (Python)
+- [YES] Management CLI
+- [YES] Example policies
+- [YES] Comprehensive documentation
+- [YES] Threat model
 
 **Not Included**:
 - Linux backends
@@ -1066,7 +1066,7 @@ Key metrics to track:
 │ Security                                        │
 │   Critical Vulnerabilities: 0      ✓            │
 │   Failed Auth Attempts:     12     ✓            │
-│   Policy Violations:        3      ⚠            │
+│   Policy Violations:        3      [MAYBE]            │
 │                                                  │
 │ User Satisfaction                               │
 │   NPS Score:                +62    ✓            │
@@ -1090,16 +1090,16 @@ Key metrics to track:
 
 | Feature | OpenLeash | Manual Approval | Vault | AWS Secrets Manager | Custom Scripts |
 |---------|---------------|-----------------|-------|---------------------|----------------|
-| AI-agent specific | ✅ Yes | ❌ No | ❌ No | ❌ No | ⚠ Maybe |
-| Rationale-based | ✅ Yes | ⚠ Manual | ❌ No | ❌ No | ❌ No |
-| Policy engine | ✅ Yes | ❌ No | ⚠ ACLs only | ⚠ IAM only | ⚠ Maybe |
-| Auto-approval patterns | ✅ Yes | ❌ No | ❌ No | ❌ No | ❌ No |
-| Package management | ✅ Yes | ❌ No | ❌ No | ❌ No | ❌ No |
-| CLI execution control | ✅ Yes | ❌ No | ❌ No | ❌ No | ⚠ Maybe |
-| Complete audit trail | ✅ Yes | ⚠ Partial | ✅ Yes | ✅ Yes | ⚠ Maybe |
-| Open source | ✅ Yes | N/A | ✅ Yes | ❌ No | ✅ Yes |
-| Easy self-hosting | ✅ Yes | N/A | ⚠ Complex | ❌ No | ✅ Yes |
-| Extensible | ✅ Yes | N/A | ⚠ Limited | ❌ No | ✅ Yes |
+| AI-agent specific | [YES] Yes | [NO] No | [NO] No | [NO] No | [MAYBE] Maybe |
+| Rationale-based | [YES] Yes | [MAYBE] Manual | [NO] No | [NO] No | [NO] No |
+| Policy engine | [YES] Yes | [NO] No | [MAYBE] ACLs only | [MAYBE] IAM only | [MAYBE] Maybe |
+| Auto-approval patterns | [YES] Yes | [NO] No | [NO] No | [NO] No | [NO] No |
+| Package management | [YES] Yes | [NO] No | [NO] No | [NO] No | [NO] No |
+| CLI execution control | [YES] Yes | [NO] No | [NO] No | [NO] No | [MAYBE] Maybe |
+| Complete audit trail | [YES] Yes | [MAYBE] Partial | [YES] Yes | [YES] Yes | [MAYBE] Maybe |
+| Open source | [YES] Yes | N/A | [YES] Yes | [NO] No | [YES] Yes |
+| Easy self-hosting | [YES] Yes | N/A | [MAYBE] Complex | [NO] No | [YES] Yes |
+| Extensible | [YES] Yes | N/A | [MAYBE] Limited | [NO] No | [YES] Yes |
 
 ### E. User Feedback Template
 

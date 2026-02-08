@@ -32,9 +32,9 @@
 
 ### Unused Imports (Fixed)
 
-- ✅ `ApprovalScope` in `daemon.rs` - removed
-- ✅ `LeaseStatus` in `worker.rs` - removed
-- ✅ Missing `SecretBackend` trait imports - fixed
+- [FIXED] `ApprovalScope` in `daemon.rs` - removed
+- [FIXED] `LeaseStatus` in `worker.rs` - removed
+- [FIXED] Missing `SecretBackend` trait imports - fixed
 
 ## Recommendations Summary
 

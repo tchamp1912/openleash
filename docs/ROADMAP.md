@@ -1,10 +1,10 @@
 # OpenLeash - Project Roadmap
 
-## Phase 1: Foundations & Core (v0.1.0) - 🟢 COMPLETE
+## Phase 1: Foundations & Core (v0.1.0) - COMPLETE
 
 **Goal**: Deliver the 3-pillar security model (Secrets, Packages, Commands) for OpenClaw on macOS.
 
-### ✅ Achievements
+### Achievements
 - [x] Modular Cargo Workspace (13 crates)
 - [x] gRPC API Contract over UDS/TCP
 - [x] **Pip, NPM, and Portable Brew** backends
@@ -19,7 +19,7 @@
 
 ---
 
-## Phase 2: OpenClaw Integration & DX (v0.2.0) - 🟡 IN PROGRESS
+## Phase 2: OpenClaw Integration & DX (v0.2.0) - IN PROGRESS
 
 **Goal**: Seamlessly integrate OpenLeash into the OpenClaw ecosystem and polish the developer experience.
 
@@ -34,7 +34,7 @@
 
 ---
 
-## Phase 3: Enterprise & Compliance (v0.3.0) - ⚪ PENDING
+## Phase 3: Enterprise & Compliance (v0.3.0) - PENDING
 
 **Goal**: Hardening for production environments and compliance audits.
 
@@ -46,7 +46,7 @@
 
 ---
 
-## Phase 4: Intelligence & Automation (v0.4.0) - ⚪ PENDING
+## Phase 4: Intelligence & Automation (v0.4.0) - PENDING
 
 **Goal**: Use usage data to improve security and reduce friction.
 
