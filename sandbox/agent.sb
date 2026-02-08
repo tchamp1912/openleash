@@ -1,0 +1,55 @@
+;; Leash AI - Base Agent Sandbox Profile (macOS Seatbelt)
+;; Usage: sandbox-exec -f agent.sb /path/to/leash request install ...
+
+(version 1)
+(deny default)
+
+;; Allow basic system operations and libraries
+(allow file-read*
+    (subpath "/usr/lib")
+    (subpath "/usr/share")
+    (subpath "/System/Library")
+    (subpath "/Library/Preferences/Logging")
+)
+
+;; Allow dynamic linker
+(allow file-read* (subpath "/usr/bin"))
+(allow process-exec (literal "/usr/bin/python3")) ;; Optional, if agent needs it
+
+;; Allow the agent to read and execute the Leash CLI
+;; Note: Replace with the actual path to your compiled leash binary
+(allow file-read* file-test-existence
+    (subpath "/Users/tommy/Documents/Projects/leash-ai/target")
+)
+(allow process-exec
+    (subpath "/Users/tommy/Documents/Projects/leash-ai/target")
+)
+
+;; IPC: Allow connection to the Leash Daemon socket
+;; We'll configure leashd to listen here
+(allow file-read* file-write*
+    (literal "/tmp/leash.sock")
+)
+(allow network-outbound
+    (literal "/tmp/leash.sock")
+)
+
+;; Scoped Access: Allow reading and executing within the managed task directory
+;; This is where leashd will install packages.
+(allow file-read* file-test-existence
+    (subpath "/tmp/leash-tasks")
+)
+(allow process-exec
+    (subpath "/tmp/leash-tasks")
+)
+
+;; Logging / Stdout
+(allow file-write*
+    (subpath "/dev/stdout")
+    (subpath "/dev/stderr")
+    (subpath "/dev/tty")
+)
+
+;; Prevent all other network access
+(deny network*)
+(allow network-outbound (literal "/tmp/leash.sock"))
