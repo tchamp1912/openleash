@@ -1,0 +1,176 @@
+syntax = "proto3";
+
+package leash.v1;
+
+import "google/protobuf/timestamp.proto";
+
+service RequestService {
+  rpc RequestPackage(RequestPackageRequest) returns (RequestPackageResponse);
+  rpc RequestSecret(RequestSecretRequest) returns (RequestSecretResponse);
+  rpc StoreSecret(StoreSecretRequest) returns (StoreSecretResponse);
+  rpc ExecuteCommand(ExecuteCommandRequest) returns (ExecuteCommandResponse);
+}
+
+service TaskService {
+  rpc StartTask(StartTaskRequest) returns (StartTaskResponse);
+  rpc EndTask(EndTaskRequest) returns (EndTaskResponse);
+}
+
+service ApprovalService {
+  rpc ListPendingApprovals(ListPendingApprovalsRequest) returns (ListPendingApprovalsResponse);
+  rpc Approve(ApproveRequest) returns (ApproveResponse);
+  rpc Deny(DenyRequest) returns (DenyResponse);
+}
+
+service AuditService {
+  rpc QueryAuditLogs(QueryAuditLogsRequest) returns (QueryAuditLogsResponse);
+}
+
+message RequestPackageRequest {
+  string request_id = 1;
+  string manager = 2; // e.g., "pip", "npm"
+  string package = 3; // e.g., "requests==2.32.3"
+  string reason = 4;
+  uint64 ttl_seconds = 5;
+  string scope_path = 6;
+  optional string task_id = 7;
+}
+
+message RequestPackageResponse {
+  string request_id = 1;
+  string status = 2; // RECEIVED, AUTO_APPROVED, PENDING_APPROVAL, DENIED, EXECUTED
+  string lease_id = 3;
+  string error_message = 4;
+}
+
+message RequestSecretRequest {
+  string request_id = 1;
+  string secret_id = 2; // e.g., "openai/api-key"
+  string reason = 3;
+  optional string task_id = 4;
+}
+
+message RequestSecretResponse {
+  string request_id = 1;
+  string status = 2;
+  string value = 3; // The plain-text secret
+  string lease_id = 4;
+  string error_message = 5;
+}
+
+message StoreSecretRequest {
+  string request_id = 1;
+  string secret_id = 2;
+  string value = 3;
+  string reason = 4;
+  optional string task_id = 5;
+}
+
+message StoreSecretResponse {
+  string request_id = 1;
+  bool success = 2;
+  string error_message = 3;
+}
+
+message ExecuteCommandRequest {
+  string request_id = 1;
+  string command = 2;
+  repeated string args = 3;
+  string reason = 4;
+  optional string task_id = 5;
+  map<string, string> env_vars = 6;
+  optional string working_dir = 7;
+  uint32 timeout_seconds = 8;
+}
+
+message ExecuteCommandResponse {
+  string request_id = 1;
+  string status = 2; // EXECUTED, PENDING_APPROVAL, DENIED
+  int32 exit_code = 3;
+  string stdout = 4;
+  string stderr = 5;
+  string error_message = 6;
+}
+
+message StartTaskRequest {
+  string name = 1;
+  uint64 ttl_seconds = 2;
+  string base_scope_path = 3;
+}
+
+message StartTaskResponse {
+  string task_id = 1;
+  string scope_path = 2;
+}
+
+message EndTaskRequest {
+  string task_id = 1;
+}
+
+message EndTaskResponse {
+  bool success = 1;
+}
+
+message ListPendingApprovalsRequest {}
+
+message ListPendingApprovalsResponse {
+  repeated PendingApproval approvals = 1;
+}
+
+message PendingApproval {
+  string approval_id = 1;
+  string request_id = 2;
+  string resource_type = 3;
+  string resource_id = 4;
+  string reason = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message ApproveRequest {
+  string approval_id = 1;
+  optional string scope = 2; // "once", "task", "permanent"
+}
+
+message ApproveResponse {
+  bool success = 1;
+}
+
+message DenyRequest {
+  string approval_id = 1;
+}
+
+message DenyResponse {
+  bool success = 1;
+}
+
+message QueryAuditLogsRequest {
+  google.protobuf.Timestamp start_time = 1;
+  google.protobuf.Timestamp end_time = 2;
+  uint32 limit = 3;
+}
+
+message QueryAuditLogsResponse {
+  repeated AuditEntry entries = 1;
+}
+
+message AuditEntry {
+
+  string id = 1;
+
+  google.protobuf.Timestamp timestamp = 2;
+
+  string event_type = 3;
+
+  string actor = 4;
+
+  string resource_type = 5;
+
+  string resource_id = 6;
+
+  string action = 7;
+
+  string status = 8;
+
+  string integrity_hash = 9;
+
+}
