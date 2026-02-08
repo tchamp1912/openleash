@@ -1,18 +1,18 @@
 [workspace]
 members = [
-    "crates/leash-ai-core",
-    "crates/leash-ai-api",
-    "crates/leash-ai-db",
-    "crates/leash-ai-backend",
-    "crates/leash-ai-backend-pip",
-    "crates/leash-ai-backend-brew",
-    "crates/leash-ai-backend-npm",
-    "crates/leash-ai-backend-keychain",
-    "crates/leash-ai-backend-telegram",
-    "crates/leash-ai-venv",
-    "crates/leash-ai-client",
-    "crates/leashd",
-    "crates/leash",
+    "crates/openleash-core",
+    "crates/openleash-api",
+    "crates/openleash-db",
+    "crates/openleash-backend",
+    "crates/openleash-backend-pip",
+    "crates/openleash-backend-brew",
+    "crates/openleash-backend-npm",
+    "crates/openleash-backend-keychain",
+    "crates/openleash-backend-telegram",
+    "crates/openleash-venv",
+    "crates/openleash-client",
+    "crates/openleashd",
+    "crates/openleash",
 ]
 resolver = "2"
 
@@ -61,16 +61,16 @@ anyhow = "1.0"
 tempfile = "3.8"
 
 # Local Crates
-leash-ai-core = { path = "crates/leash-ai-core" }
-leash-ai-api = { path = "crates/leash-ai-api" }
-leash-ai-db = { path = "crates/leash-ai-db" }
-leash-ai-backend = { path = "crates/leash-ai-backend" }
-leash-ai-backend-pip = { path = "crates/leash-ai-backend-pip" }
-leash-ai-backend-brew = { path = "crates/leash-ai-backend-brew" }
-leash-ai-backend-npm = { path = "crates/leash-ai-backend-npm" }
-leash-ai-backend-keychain = { path = "crates/leash-ai-backend-keychain" }
-leash-ai-backend-telegram = { path = "crates/leash-ai-backend-telegram" }
-leash-ai-venv = { path = "crates/leash-ai-venv" }
-leash-ai-client = { path = "crates/leash-ai-client" }
-leashd = { path = "crates/leashd" }
-leash = { path = "crates/leash" }
+openleash-core = { path = "crates/openleash-core" }
+openleash-api = { path = "crates/openleash-api" }
+openleash-db = { path = "crates/openleash-db" }
+openleash-backend = { path = "crates/openleash-backend" }
+openleash-backend-pip = { path = "crates/openleash-backend-pip" }
+openleash-backend-brew = { path = "crates/openleash-backend-brew" }
+openleash-backend-npm = { path = "crates/openleash-backend-npm" }
+openleash-backend-keychain = { path = "crates/openleash-backend-keychain" }
+openleash-backend-telegram = { path = "crates/openleash-backend-telegram" }
+openleash-venv = { path = "crates/openleash-venv" }
+openleash-client = { path = "crates/openleash-client" }
+openleashd = { path = "crates/openleashd" }
+openleash = { path = "crates/openleash" }

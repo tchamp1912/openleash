@@ -1,6 +1,6 @@
-# Leash AI - First Mission Walkthrough
+# OpenLeash - First Mission Walkthrough
 
-This guide will take you from a fresh installation to running a sandboxed AI agent mission with Leash AI.
+This guide will take you from a fresh installation to running a sandboxed AI agent mission with OpenLeash.
 
 ## Step 1: Initialization
 
@@ -8,17 +8,17 @@ First, let's set up your local environment.
 
 ```bash
 # Run the onboarding wizard
-leash init
+openleash init
 ```
 
-This command creates a `~/.leash` directory containing:
+This command creates a `~/.openleash` directory containing:
 - `config.yaml`: Global settings for the daemon.
 - `policies.yaml`: Rules for what your agent can access.
 - `agent.sb`: A macOS sandbox profile tailored for your machine.
 
 ## Step 2: Configure a Strict Policy
 
-Open `~/.leash/policies.yaml`. By default, it allows everything. Let's make it strict to see Leash in action.
+Open `~/.openleash/policies.yaml`. By default, it allows everything. Let's make it strict to see Leash in action.
 
 Replace the content with this:
 
@@ -34,10 +34,10 @@ Replace the content with this:
 
 ## Step 3: Start the Gatekeeper
 
-Start the Leash AI daemon in a separate terminal:
+Start the OpenLeash daemon in a separate terminal:
 
 ```bash
-leashd
+openleashd
 ```
 
 ## Step 4: The "Fail-Closed" Test
@@ -45,15 +45,15 @@ leashd
 Try to install a package while inside the sandbox. It should fail because our policy is "deny-all".
 
 ```bash
-# Run the leash client inside the macOS sandbox
-sandbox-exec -f ~/.leash/agent.sb leash request install --manager pip --package requests --scope /tmp/test-scope --reason "testing"
+# Run the openleash client inside the macOS sandbox
+sandbox-exec -f ~/.openleash/agent.sb openleash request install --manager pip --package requests --scope /tmp/test-scope --reason "testing"
 ```
 
-You should see a **Permission Denied** error. This confirms that your agent is properly "leashed."
+You should see a **Permission Denied** error. This confirms that your agent is properly secured.
 
 ## Step 5: Granting Permission
 
-Update `~/.leash/policies.yaml` to allow the `requests` library:
+Update `~/.openleash/policies.yaml` to allow the `requests` library:
 
 ```yaml
 - id: "allow-requests"
@@ -76,38 +76,38 @@ Now, let's run a full mission.
 
 1.  **Start a Task**:
     ```bash
-    leash task start --name "Web Scraping" --base-path /tmp/agent-work --ttl 3600
+    openleash task start --name "Web Scraping" --base-path /tmp/agent-work --ttl 3600
     # Copy the TASK_ID and SCOPE_PATH from the output
     ```
 
 2.  **Install the Tool**:
     ```bash
-    leash request install --manager pip --package requests --task-id <TASK_ID>
+    openleash request install --manager pip --package requests --task-id <TASK_ID>
     ```
 
 3.  **Run the Agent**:
     ```bash
     # Brokered execution: the daemon runs the command and streams output
-    leash run --task-id <TASK_ID> --reason "running scraper" -- python my_scraper.py
+    openleash run --task-id <TASK_ID> --reason "running scraper" -- python my_scraper.py
     ```
 
-    *Note: `leash run` is different from `leash exec`. `run` happens via the daemon (allowing the daemon to enforce strict command-level policies), whereas `exec` happens locally but with injected secrets.*
+    *Note: `openopenleash run` is different from `openopenleash exec`. `run` happens via the daemon (allowing the daemon to enforce strict command-level policies), whereas `exec` happens locally but with injected secrets.*
 
 4.  **Cleanup**:
     ```bash
-    leash task end --task-id <TASK_ID>
+    openleash task end --task-id <TASK_ID>
     ```
 
 ## Step 7: Audit the Evidence
 
-Leash AI maintains a hash-chained ledger of every action. You can inspect this at any time.
+OpenLeash maintains a hash-chained ledger of every action. You can inspect this at any time.
 
 ```bash
 # List the last 10 operations
-leash audit list --limit 10
+openleash audit list --limit 10
 
 # Verify the integrity of the ledger
-leash audit verify
+openleash audit verify
 ```
 
 Verification: `ls /tmp/agent-work` should show that the environment has been completely removed.

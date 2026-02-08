@@ -1,14 +1,14 @@
-# Leash AI - Security Design
+# OpenLeash - Security Design
 
-Leash AI is built on the principle of **Fail-Secure Isolation**. This document details the security mechanisms that protect sensitive resources from compromised or erratic AI agents.
+OpenLeash is built on the principle of **Fail-Secure Isolation**. This document details the security mechanisms that protect sensitive resources from compromised or erratic AI agents.
 
 ## 🌉 The Sandbox Gap
 
-The core security innovation of Leash AI is the **Sandbox Gap**. 
+The core security innovation of OpenLeash is the **Sandbox Gap**. 
 
-1.  **Confinement**: The AI agent is executed within a restricted context (e.g., macOS Seatbelt profile generated via `leash init`). This profile denies all network access, broad filesystem access, and process execution by default.
-2.  **Brokerage**: The only "hole" in the agent's sandbox is a Unix Domain Socket (/tmp/leash.sock). The agent cannot access the internet or secrets directly; it must *request* these capabilities from the `leashd` daemon.
-3.  **Trust Boundary**: `leashd` runs outside the agent's sandbox. It brokers resources (packages, secrets, PATH) but does not execute commands. Agents execute commands directly in their sandbox, ensuring no privilege escalation.
+1.  **Confinement**: The AI agent is executed within a restricted context (e.g., macOS Seatbelt profile generated via `openopenleash init`). This profile denies all network access, broad filesystem access, and process execution by default.
+2.  **Brokerage**: The only "hole" in the agent's sandbox is a Unix Domain Socket (/tmp/openleash.sock). The agent cannot access the internet or secrets directly; it must *request* these capabilities from the `openleashd` daemon.
+3.  **Trust Boundary**: `openleashd` runs outside the agent's sandbox. It brokers resources (packages, secrets, PATH) but does not execute commands. Agents execute commands directly in their sandbox, ensuring no privilege escalation.
 
 ## 📜 Rationale-Based Access
 
@@ -19,20 +19,20 @@ Every request to the daemon must include a **Rationale string**.
 
 ## 🔗 Hash-Chained Audit Ledger
 
-To prevent tampering with the action history, Leash AI implements an immutable audit ledger:
+To prevent tampering with the action history, OpenLeash implements an immutable audit ledger:
 - **Integrity**: Every audit event contains a `integrity_hash` (SHA-256).
 - **Chaining**: The hash of event `N` is calculated as `hash(event_data + hash_of_event_N-1)`.
 - **Persistence**: The current tail of the chain is stored in the `integrity` table in SQLite.
-- **Verification**: The `leash audit verify` command re-calculates the chain from the first entry to detect any deletions or modifications.
+- **Verification**: The `openopenleash audit verify` command re-calculates the chain from the first entry to detect any deletions or modifications.
 
 ## 🎟️ Approval Scopes
 
-Leash AI balances security with developer productivity through granular approval scopes:
+OpenLeash balances security with developer productivity through granular approval scopes:
 
 | Scope | Lifetime | Cleanup |
 | :--- | :--- | :--- |
 | **Once** | Single Request | Token invalidated immediately. |
-| **Task** | Task Session | Automatically revoked when `leash task end` is called. |
+| **Task** | Task Session | Automatically revoked when `openopenleash task end` is called. |
 | **Permanent** | Indefinite | Must be manually revoked via database or CLI. |
 
 Permissions are stored in the `approved_resources` table and checked *before* policy evaluation, allowing trusted agents to proceed without constant interruption.
@@ -43,7 +43,7 @@ When an agent needs a secret (e.g., an `OPENAI_API_KEY`):
 1.  The agent calls `RequestSecret`.
 2.  The daemon fetches the secret from the macOS Keychain.
 3.  The secret is returned over the secure UDS.
-4.  If using `leash exec`, the secret is placed only in the environment variables of the child process.
+4.  If using `openopenleash exec`, the secret is placed only in the environment variables of the child process.
 5.  The secret **never touches the disk** and is cleared from the agent's memory as soon as the process terminates.
 
 ## 🛡️ Fail-Secure Defaults

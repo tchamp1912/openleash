@@ -1,0 +1,27 @@
+[
+  {
+    "name": "leash_task_start",
+    "description": "Initialize a secure mission environment. Returns a Task ID.",
+    "command": "openleash task start --name {name} --ttl 3600 --base-path /tmp/leash-tasks"
+  },
+  {
+    "name": "leash_install_package",
+    "description": "Request installation of a python package into the current task.",
+    "command": "openleash request install --manager pip --package {package} --task-id {task_id} --reason {rationale}"
+  },
+  {
+    "name": "leash_exec_secure",
+    "description": "Execute a command with injected secrets. Secrets are placed in the environment and NOT visible to the LLM.",
+    "command": "openleash exec --task_id {task_id} --secret {ENV_VAR}={secret_id} -- {command}"
+  },
+  {
+    "name": "leash_get_task_path",
+    "description": "Get the task environment PATH for direct command execution. Use with: eval $(openleash run --task-id {task_id})",
+    "command": "openleash run --task-id {task_id}"
+  },
+  {
+    "name": "leash_task_end",
+    "description": "Terminate the task and cleanup all isolated resources.",
+    "command": "openleash task end --task-id {task_id}"
+  }
+]

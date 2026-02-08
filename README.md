@@ -1,8 +1,8 @@
-# Leash AI
+# OpenLeash
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-Leash AI is a **security-first privilege and access management layer** designed for AI agents. It acts as a controlled "bridge" between restricted agent sandboxes and the capable system host, providing scoped environments, secure tool installation, and audited credential access.
+OpenLeash is a **security-first privilege and access management layer** designed for AI agents. It acts as a controlled "bridge" between restricted agent sandboxes and the capable system host, providing scoped environments, secure tool installation, and audited credential access.
 
 ## 🚀 Key Features
 
@@ -22,30 +22,30 @@ Leash AI is a **security-first privilege and access management layer** designed 
 - **Protobuf**: `brew install protobuf`
 
 ### 2. Run the Daemon
-The daemon (`leashd`) manages the policies, database, and installations.
+The daemon (`openleashd`) manages the policies, database, and installations.
 ```bash
 # Build the project
 cargo build
 
 # Start the daemon
-./target/debug/leashd
+./target/debug/openleashd
 ```
 
 ### 3. Use the CLI
 In another terminal (or from your agent):
 ```bash
 # Start a task (creates a scoped environment)
-leash task start --name "Data Analysis" --base-path /tmp/agent-work --ttl 3600
+openleash task start --name "Data Analysis" --base-path /tmp/agent-work --ttl 3600
 
 # Install a package into that task's scope
-leash request install --manager pip --package pandas --task-id <TASK_ID>
+openleash request install --manager pip --package pandas --task-id <TASK_ID>
 
 # Get task PATH and execute commands directly
-eval $(leash run --task-id <TASK_ID>)
+eval $(openleash run --task-id <TASK_ID>)
 python my_agent.py
 
 # Or execute with secrets injected (secrets never touch disk)
-leash exec --task-id <TASK_ID> --secret API_KEY=openai/api-key -- python my_agent.py
+openleash exec --task-id <TASK_ID> --secret API_KEY=openai/api-key -- python my_agent.py
 ```
 
 ## 📖 Documentation
@@ -56,8 +56,8 @@ leash exec --task-id <TASK_ID> --secret API_KEY=openai/api-key -- python my_agen
 
 ## ⚠️ Current Status: Alpha
 
-Leash AI is under active development. 
-- **Implemented**: Task lifecycles, Scoped Pip/NPM/Brew backends, Keychain backend, UDS IPC, `leash exec` injection.
+OpenLeash is under active development. 
+- **Implemented**: Task lifecycles, Scoped Pip/NPM/Brew backends, Keychain backend, UDS IPC, `openopenleash exec` injection.
 - **In Progress**: Policy engine evaluation, immutable hash-chained audit logs, human-in-the-loop approval workflows.
 
 ## 🤝 Contributing
@@ -66,4 +66,4 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 ## 📄 License
 
-Leash AI is released under the [Apache License 2.0](LICENSE).
+OpenLeash is released under the [Apache License 2.0](LICENSE).

@@ -2,7 +2,7 @@
 
 ## Dead Code
 
-### Unused Types in `leash-ai-core/src/models.rs`
+### Unused Types in `openleash-core/src/models.rs`
 
 1. **`RequestState` enum** (lines 29-40)
    - Status: Not used anywhere in the codebase
@@ -19,14 +19,14 @@
 1. **`config = "0.14"`** in workspace `Cargo.toml` (line 53)
    - Status: Listed but never imported/used
    - Recommendation: **Remove** - we use `serde_yaml` directly for config loading
-   - Also listed in `leashd/Cargo.toml` but not used there either
+   - Also listed in `openleashd/Cargo.toml` but not used there either
 
 ## Code Quality Issues
 
-### Missing Re-exports in `leash-ai-core`
+### Missing Re-exports in `openleash-core`
 
 - **Issue**: Only `LeashError` and `Result` are re-exported from `lib.rs`
-- **Impact**: Callers must use `leash_ai_core::models::...`, `leash_ai_core::config::...`, etc.
+- **Impact**: Callers must use `openleash_core::models::...`, `openleash_core::config::...`, etc.
 - **Recommendation**: Add `pub use models::*;` or selective re-exports for commonly used types
 - **Priority**: Low (cosmetic, but improves ergonomics)
 
@@ -39,11 +39,11 @@
 ## Recommendations Summary
 
 ### High Priority
-1. **Remove unused `config` dependency** from workspace and `leashd/Cargo.toml`
+1. **Remove unused `config` dependency** from workspace and `openleashd/Cargo.toml`
 
 ### Medium Priority
 2. **Mark `RequestState` and `CapabilityGrant`** with `#[allow(dead_code)]` and add TODO comments if they're planned
 
 ### Low Priority
-3. **Add re-exports** in `leash-ai-core/lib.rs` for better ergonomics
+3. **Add re-exports** in `openleash-core/lib.rs` for better ergonomics
 4. **Consider adding `#[deny(dead_code)]`** to catch future dead code (after fixing current issues)

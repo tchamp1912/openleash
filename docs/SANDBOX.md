@@ -1,10 +1,10 @@
-# Sandboxing in Leash AI (macOS Seatbelt)
+# Sandboxing in OpenLeash (macOS Seatbelt)
 
-Leash AI uses macOS **Seatbelt** (the native sandbox framework used by Safari and other system apps) to isolate AI agents. This provides a "Sandbox Gap" where the agent is strictly confined, and all sensitive operations must be brokered by the `leashd` daemon.
+OpenLeash uses macOS **Seatbelt** (the native sandbox framework used by Safari and other system apps) to isolate AI agents. This provides a "Sandbox Gap" where the agent is strictly confined, and all sensitive operations must be brokered by the `openleashd` daemon.
 
 ## Sandbox Profiles
 
-Leash AI provides several tiered sandbox profiles out of the box. You can generate or customize these using the CLI.
+OpenLeash provides several tiered sandbox profiles out of the box. You can generate or customize these using the CLI.
 
 ### Tiered Profiles
 
@@ -17,7 +17,7 @@ Leash AI provides several tiered sandbox profiles out of the box. You can genera
 
 ## Feature-Aware Permissions
 
-When you run `leash init`, Leash automatically detects your configuration and adds necessary "holes" to the sandbox for your enabled tools:
+When you run `openopenleash init`, Leash automatically detects your configuration and adds necessary "holes" to the sandbox for your enabled tools:
 
 - **Pip/Python**: Allows execution of `/usr/bin/python3`.
 - **Homebrew**: Allows access to `/opt/homebrew` binaries.
@@ -29,7 +29,7 @@ When you run `leash init`, Leash automatically detects your configuration and ad
 To run a command inside the sandbox, use the native macOS `sandbox-exec` tool:
 
 ```bash
-sandbox-exec -f ~/.leash/agent.sb <your-command>
+sandbox-exec -f ~/.openleash/agent.sb <your-command>
 ```
 
 Or use the provided helper script:
@@ -40,14 +40,14 @@ Or use the provided helper script:
 
 ## Management via CLI
 
-You can list and generate profiles using the `leash sandbox` command:
+You can list and generate profiles using the `openopenleash sandbox` command:
 
 ```bash
 # List available templates
-leash sandbox list
+openleash sandbox list
 
 # Generate a restrictive profile and save it
-leash sandbox generate --profile restrictive-closed --output my_secure_agent.sb
+openleash sandbox generate --profile restrictive-closed --output my_secure_agent.sb
 ```
 
 ## Anatomy of a Leash Profile
@@ -56,6 +56,6 @@ A Leash-generated profile typically includes:
 
 1.  **Deny Default**: `(deny default)` - Everything is blocked unless explicitly allowed.
 2.  **System Libs**: Allows reading `/usr/lib`, `/System/Library`, etc.
-3.  **Leash Infrastructure**: Allows talking to `/tmp/leash.sock` (the daemon).
-4.  **Task Scopes**: Allows full access to `/tmp/leash-tasks/` (where your virtual environments live).
+3.  **Leash Infrastructure**: Allows talking to `/tmp/openleash.sock` (the daemon).
+4.  **Task Scopes**: Allows full access to `/tmp/openleash-tasks/` (where your virtual environments live).
 5.  **Audit & Logs**: Allows writing to `stdout`/`stderr`.

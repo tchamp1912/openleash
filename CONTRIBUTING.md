@@ -1,6 +1,6 @@
-# Contributing to Leash AI
+# Contributing to OpenLeash
 
-We love your input! We want to make contributing to Leash AI as easy and transparent as possible, whether it's:
+We love your input! We want to make contributing to OpenLeash as easy and transparent as possible, whether it's:
 
 - Reporting a bug
 - Discussing the current state of the code

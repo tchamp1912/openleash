@@ -1,8 +1,8 @@
-# Leash AI - Project Summary
+# OpenLeash - Project Summary
 
 ## 🎉 What We Built
 
-Leash AI is a comprehensive, production-ready permission and access management system designed specifically for AI agents (built for [OpenClaw](https://github.com/openclaw/openclaw)) running on **macOS**. It provides a secure "Sandbox Gap" between restricted agents and sensitive system resources.
+OpenLeash is a comprehensive, production-ready permission and access management system designed specifically for AI agents (built for [OpenClaw](https://github.com/openclaw/openclaw)) running on **macOS**. It provides a secure "Sandbox Gap" between restricted agents and sensitive system resources.
 
 ## 📦 Core Pillars
 
@@ -13,9 +13,9 @@ Leash AI is a comprehensive, production-ready permission and access management s
 ## 🚀 Key Deliverables
 
 ### Core Framework (Rust)
-- **Unified Daemon (`leashd`)**: Managed state machine for all requests, tasks, and audit logs.
-- **Async SDK (`leash-ai-client`)**: Developer-friendly library for integrating Leash into any AI agent framework.
-- **Management CLI (`leash`)**: Powerful toolkit for environment initialization, manual approvals, and audit verification.
+- **Unified Daemon (`openleashd`)**: Managed state machine for all requests, tasks, and audit logs.
+- **Async SDK (`openleash-client`)**: Developer-friendly library for integrating Leash into any AI agent framework.
+- **Management CLI (`openleash`)**: Powerful toolkit for environment initialization, manual approvals, and audit verification.
 
 ### Security Infrastructure
 - **Policy Engine**: Regex-based pattern matching with priority weights and "deny-by-default" logic.
@@ -30,7 +30,7 @@ Leash AI is a comprehensive, production-ready permission and access management s
 ## 🏗️ Technical Highlights
 
 - **Crates**: 13 modular Rust crates for high maintainability.
-- **IPC**: Secure Unix Domain Sockets (/tmp/leash.sock) bridging the sandbox gap.
+- **IPC**: Secure Unix Domain Sockets (/tmp/openleash.sock) bridging the sandbox gap.
 - **Database**: SQLite with async SQLx for persistent tasks, leases, and audit integrity.
 - **Reliability**: 27+ integration tests covering brokered execution, persistent approvals, and task lifecycle.
 
@@ -45,14 +45,14 @@ Leash AI is a comprehensive, production-ready permission and access management s
 
 ```bash
 # 1. Initialize environment
-leash init
+openleash init
 
 # 2. Start the Gatekeeper
-leashd &
+openleashd &
 
 # 3. Run a sandboxed mission
-leash task start --name "Research"
-leash run --task-id <ID> --reason "data analysis" -- python3 -c "print('Leashed!')"
+openleash task start --name "Research"
+openleash run --task-id <ID> --reason "data analysis" -- python3 -c "print('Leashed!')"
 ```
 
 ---

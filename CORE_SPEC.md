@@ -1,6 +1,6 @@
-# Leash AI - Core Specification
+# OpenLeash - Core Specification
 
-This document is the canonical source of truth for the core architecture, state transitions, and data models of Leash AI. It is language-agnostic and serves as the primary guide for implementation, testing, and validation. All other design documents are subordinate to this specification.
+This document is the canonical source of truth for the core architecture, state transitions, and data models of OpenLeash. It is language-agnostic and serves as the primary guide for implementation, testing, and validation. All other design documents are subordinate to this specification.
 
 ## 1. Core State Machine
 
@@ -92,7 +92,7 @@ The token will be a JSON Web Token (JWT) with the following claims in its payloa
 
 ```json
 {
-  "iss": "leashd",                          // Issuer (the daemon)
+  "iss": "openleashd",                          // Issuer (the daemon)
   "sub": "instance:openclaw-prod-123",      // Subject (the agent instance)
   "aud": "leash-backend:packages",          // Audience (the package backend)
   "jti": "uuid-v4-string",                  // JWT ID (for one-time use)
@@ -135,15 +135,15 @@ The audit log is the immutable system of record for all events.
 
 The system is split into two primary components to enforce privilege separation:
 
-*   **Client (`leash`)**: The client application that is intended to be installed **inside an agent's sandbox**. It is considered untrusted. Its only role is to formulate and send signed gRPC requests to the daemon via a Unix Domain Socket.
-*   **Daemon (`leashd`)**: The trusted authority that runs as a user-level daemon **outside the agent sandbox**. It is responsible for:
+*   **Client (`openleash`)**: The client application that is intended to be installed **inside an agent's sandbox**. It is considered untrusted. Its only role is to formulate and send signed gRPC requests to the daemon via a Unix Domain Socket.
+*   **Daemon (`openleashd`)**: The trusted authority that runs as a user-level daemon **outside the agent sandbox**. It is responsible for:
     *   Policy evaluation
     *   Handling approval workflows
     *   Issuing capability grants (tokens)
     *   Calling backend execution layers
     *   Managing leases
     *   Writing to the audit log
-*   **Privileged Helper**: For operations that require root (e.g., `brew` installs, if implemented), `leashd` will communicate with a minimal, securely-installed helper process. The daemon itself remains non-privileged.
+*   **Privileged Helper**: For operations that require root (e.g., `brew` installs, if implemented), `openleashd` will communicate with a minimal, securely-installed helper process. The daemon itself remains non-privileged.
 
 ## 7. Backend Contract
 
@@ -183,9 +183,9 @@ The daemon exposes a core API for clients.
 
 To ensure that package installations are reversible and do not contaminate the global system state, all installations MUST occur within a **scoped, isolated environment**.
 
-*   **Principle**: Leash AI does not promise to "uninstall" a package from a shared environment. Instead, it promises to **delete the entire isolated environment** once the lease expires.
+*   **Principle**: OpenLeash does not promise to "uninstall" a package from a shared environment. Instead, it promises to **delete the entire isolated environment** once the lease expires.
 *   **Supported Scopes (v0):**
-    *   **Python:** A dedicated virtual environment (`.venv`) created within the agent's sandbox or project directory. The `leash` client will be responsible for reporting the path to this `venv`.
+    *   **Python:** A dedicated virtual environment (`.venv`) created within the agent's sandbox or project directory. The `openleash` client will be responsible for reporting the path to this `venv`.
     *   **Node.js:** A project-local `node_modules` directory. The installation is scoped to the `package.json` in the agent's working directory.
 *   **Global Installs**: Global installations (`pip install -g`, `npm install -g`, installing to system-wide `brew`) are **strictly forbidden** by default policy and should always be considered a high-risk operation requiring special privilege.
 
@@ -205,5 +205,5 @@ For package installations, a "token" is a long-lived **Lease** object that repre
     *   `expires_at`: The timestamp when this lease expires.
 *   **Lifecycle**:
     1.  **Creation**: A `Lease` is created with `status: ACTIVE` upon successful installation.
-    2.  **Reclamation**: A background task in `leashd` periodically scans for leases where `expires_at` is in the past.
+    2.  **Reclamation**: A background task in `openleashd` periodically scans for leases where `expires_at` is in the past.
     3.  **Execution**: For expired leases, the daemon executes the reclamation action (e.g., `rm -rf /path/to/project/.venv`) and updates the lease `status` to `EXPIRED`.

@@ -1,4 +1,4 @@
-# Leash AI - Threat Model
+# OpenLeash - Threat Model
 
 **Version**: 1.1  
 **Last Updated**: 2025-02-08  
@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-This document identifying security threats to Leash AI and describes mitigations. Leash AI acts as a trusted intermediary between AI agents and sensitive resources.
+This document identifying security threats to OpenLeash and describes mitigations. OpenLeash acts as a trusted intermediary between AI agents and sensitive resources.
 
 **Critical Principle**: The **Sandbox Gap** ensures that even a fully compromised agent cannot access system resources without brokering through the daemon.
 
@@ -15,7 +15,7 @@ This document identifying security threats to Leash AI and describes mitigations
 ## Trust Boundaries
 
 ### 🌉 Boundary 1: The Sandbox Gap (Agent ↔ Daemon)
-**Crossing**: gRPC requests over a Unix Domain Socket (`/tmp/leash.sock`).
+**Crossing**: gRPC requests over a Unix Domain Socket (`/tmp/openleash.sock`).
 
 **Threats**:
 - Socket hijacking.
@@ -35,8 +35,8 @@ This document identifying security threats to Leash AI and describes mitigations
 - **Path Traversal**: Agent requests installation into a sensitive system directory.
 
 **Controls**:
-- **No-Shell Execution**: `leashd` uses `std::process::Command` without a shell wrapper.
-- **Isolated Scopes**: Installations are strictly limited to `/tmp/leash-tasks/` via `VenvManager`.
+- **No-Shell Execution**: `openleashd` uses `std::process::Command` without a shell wrapper.
+- **Isolated Scopes**: Installations are strictly limited to `/tmp/openleash-tasks/` via `VenvManager`.
 - **Regex Enforcement**: Policy Engine validates all Resource IDs against strict whitelist patterns.
 
 ---
@@ -48,12 +48,12 @@ This document identifying security threats to Leash AI and describes mitigations
 **T-001: Audit Log Manipulation**
 - **Description**: Attacker deletes log entries to hide malicious activity.
 - **Impact**: Loss of accountability.
-- **Mitigation**: **Hash-Chained Integrity**. Every log entry is chained to the previous one using SHA-256. `leash audit verify` detects any gaps or alterations in the history.
+- **Mitigation**: **Hash-Chained Integrity**. Every log entry is chained to the previous one using SHA-256. `openopenleash audit verify` detects any gaps or alterations in the history.
 
 **T-002: Policy Bypass**
 - **Description**: Attacker modifies the local YAML policy file.
 - **Impact**: Permanent unauthorized access.
-- **Mitigation**: **File Integrity**. Policies should be owned by `root` or a dedicated `leashd` user with `600` permissions.
+- **Mitigation**: **File Integrity**. Policies should be owned by `root` or a dedicated `openleashd` user with `600` permissions.
 
 ### Information Disclosure
 

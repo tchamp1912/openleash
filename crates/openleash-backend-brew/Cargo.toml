@@ -1,0 +1,11 @@
+[package]
+name = "openleash-backend-brew"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+openleash-core = { workspace = true }
+openleash-backend = { workspace = true }
+openleash-venv = { workspace = true }
+tokio = { workspace = true }
+async-trait = "0.1"

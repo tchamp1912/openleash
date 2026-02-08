@@ -1,4 +1,4 @@
-# Leash AI - Canonical Feature Tracker
+# OpenLeash - Canonical Feature Tracker
 
 This document tracks the implementation progress of all features defined in the PRD and the overall project roadmap.
 
@@ -18,7 +18,7 @@ This document tracks the implementation progress of all features defined in the 
 | SQLite Persistence Layer | 🟢 | Async storage using SQLx with automatic migrations. |
 | Unix Domain Socket (UDS) Support | 🟢 | Secure local IPC for agent-to-daemon communication. |
 | YAML Configuration Schema | 🟢 | Unified configuration for server, storage, and backends. |
-| Onboarding Wizard (`leash init`) | 🟢 | Automatic environment scaffolding and profile generation. |
+| Onboarding Wizard (`openopenleash init`) | 🟢 | Automatic environment scaffolding and profile generation. |
 
 ## 2. Resource Backends (P0)
 | Feature | Status | Description |
@@ -49,7 +49,7 @@ This document tracks the implementation progress of all features defined in the 
 ## 5. Human-in-the-Loop (P0)
 | Feature | Status | Description |
 | :--- | :---: | :--- |
-| **CLI Approval Management** | 🟢 | `leash approve {list, grant, deny}` commands. |
+| **CLI Approval Management** | 🟢 | `openopenleash approve {list, grant, deny}` commands. |
 | **Telegram Integration** | 🟢 | Real-time mobile notifications and approval buttons. |
 | Slack Integration | ⚪ | Pending. |
 | Web UI Dashboard | ⚪ | Future Milestone. |
@@ -58,16 +58,16 @@ This document tracks the implementation progress of all features defined in the 
 | Feature | Status | Description |
 | :--- | :---: | :--- |
 | **Hash-Chained Audit Ledger** | 🟢 | Immutable SHA-256 ledger of all daemon actions. |
-| Audit Query CLI (`leash audit`) | 🟢 | Visibility into the action history. |
+| Audit Query CLI (`openopenleash audit`) | 🟢 | Visibility into the action history. |
 | Integrity Verification | 🟢 | Locally verify the structural integrity of the chain. |
-| Export (JSON/CSV) | 🟡 | JSON output implemented for `leash audit list`. |
+| Export (JSON/CSV) | 🟡 | JSON output implemented for `openopenleash audit list`. |
 
 ## 7. Lifecycle & Automation (P1)
 | Feature | Status | Description |
 | :--- | :---: | :--- |
 | Automatic Task Reaping | 🟢 | Background worker to clean up expired environments. |
 | Standalone Lease Reaping | 🟢 | Background worker to uninstall temporary packages. |
-| Service Installation (`leash install`) | 🟡 | Generates LaunchAgent/Systemd plists. |
+| Service Installation (`openleash install`) | 🟡 | Generates LaunchAgent/Systemd plists. |
 | Health Checks | ⚪ | Pending. |
 
 ---

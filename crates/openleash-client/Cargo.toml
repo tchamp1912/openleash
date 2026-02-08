@@ -1,0 +1,12 @@
+[package]
+name = "openleash-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+openleash-core = { workspace = true }
+openleash-api = { workspace = true }
+tonic = { workspace = true }
+tokio = { workspace = true }
+uuid = { workspace = true }
+tower = "0.4"

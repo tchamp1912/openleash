@@ -19,23 +19,23 @@
 ;; Allow the agent to read and execute the Leash CLI
 ;; Note: Replace with the actual path to your compiled leash binary
 (allow file-read* file-test-existence
-    (subpath "/Users/tommy/Documents/Projects/leash-ai/target")
+    (subpath "/Users/tommy/Documents/Projects/openleash/target")
 )
 (allow process-exec
-    (subpath "/Users/tommy/Documents/Projects/leash-ai/target")
+    (subpath "/Users/tommy/Documents/Projects/openleash/target")
 )
 
 ;; IPC: Allow connection to the Leash Daemon socket
-;; We'll configure leashd to listen here
+;; We'll configure openleashd to listen here
 (allow file-read* file-write*
-    (literal "/tmp/leash.sock")
+    (literal "/tmp/openopenleash.sock")
 )
 (allow network-outbound
-    (literal "/tmp/leash.sock")
+    (literal "/tmp/openopenleash.sock")
 )
 
 ;; Scoped Access: Allow reading and executing within the managed task directory
-;; This is where leashd will install packages.
+;; This is where openleashd will install packages.
 (allow file-read* file-test-existence
     (subpath "/tmp/leash-tasks")
 )
@@ -52,4 +52,4 @@
 
 ;; Prevent all other network access
 (deny network*)
-(allow network-outbound (literal "/tmp/leash.sock"))
+(allow network-outbound (literal "/tmp/openopenleash.sock"))

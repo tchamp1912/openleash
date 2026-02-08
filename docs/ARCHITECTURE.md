@@ -1,10 +1,10 @@
-# Leash AI - Architecture
+# OpenLeash - Architecture
 
-Permission and access management for AI agents. Keep your AI agent on a leash—built for [OpenClaw](https://github.com/openclaw/openclaw) with IT-style access controls.
+Permission and access management for AI agents. Keep your AI agent secure—built for [OpenClaw](https://github.com/openclaw/openclaw) with IT-style access controls.
 
 ## 🎯 Overview
 
-Leash AI provides a secure, auditable system for managing what AI agents can access:
+OpenLeash provides a secure, auditable system for managing what AI agents can access:
 
 - **🔐 Secrets**: API keys and credentials brokered via macOS Keychain.
 - **📦 Packages**: Scoped package installation (pip, npm, brew) with session-aware tasks.
@@ -14,7 +14,7 @@ Leash AI provides a secure, auditable system for managing what AI agents can acc
 
 AI agents need access to tools and secrets to complete missions. Giving unrestricted access is a security risk. This project provides:
 
-1. **Sandbox Gap**: Agents run in restricted contexts (e.g. `sandbox-exec`) and request capabilities from the trusted `leashd` via a Unix Domain Socket.
+1. **Sandbox Gap**: Agents run in restricted contexts (e.g. `sandbox-exec`) and request capabilities from the trusted `openleashd` via a Unix Domain Socket.
 2. **Rationale-based Requests**: Agents must explain *why* they need access for every request.
 3. **Session-Aware Tasks**: Unified environments for specific missions, with automatic atomic cleanup.
 4. **Human-in-the-Loop**: Seamless approval workflows via CLI and Telegram.
@@ -22,13 +22,13 @@ AI agents need access to tools and secrets to complete missions. Giving unrestri
 
 ## 🏗️ Architecture
 
-The system is implemented as a **Rust workspace** with a **gRPC API**. The daemon (`leashd`) hosts the services; the CLI (`leash`) and other clients use the `leash-ai-client` crate to call them.
+The system is implemented as a **Rust workspace** with a **gRPC API**. The daemon (`openleashd`) hosts the services; the CLI (`openleash`) and other clients use the `openleash-client` crate to call them.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    OpenClaw / Agent                        │
 │  ┌──────────────────────────────────────────────────────┐  │
-│  │           leash-ai-client (Rust SDK)                 │  │
+│  │           openleash-client (Rust SDK)                 │  │
 │  │  • request_package()                                 │  │
 │  │  • request_secret() / store_secret()                 │  │
 │  │  • get_task_environment()                           │  │
@@ -38,7 +38,7 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
                       │ gRPC (tonic) over UDS / TCP
                       ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              leashd (daemon)                                │
+│              openleashd (daemon)                                │
 │  ┌──────────────────────────────────────────────────────┐  │
 │  │  RequestService / TaskService / ApprovalService      │  │
 │  │  • Policy Engine (Regex + Priority)                  │  │
@@ -48,7 +48,7 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
 │  └──────┬────────────────────────────────┬──────────────┘  │
 │         │                                │                  │
 │    ┌────▼────────┐              ┌───────▼────────┐        │
-│    │ leash-ai-db │              │ leash-ai-venv   │        │
+│    │ openleash-db │              │ openleash-venv   │        │
 │    │ (SQLite)    │              │ (Managed Scopes)│        │
 │    └─────────────┘              └───────┬────────┘        │
 │                                         │                  │
@@ -63,14 +63,14 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
 
 | Crate | Role |
 |-------|------|
-| **leash-ai-core** | Shared domain models, policy engine, and configuration schema. |
-| **leash-ai-api** | gRPC API definition (.proto) and generated bindings. |
-| **leash-ai-db** | SQLite persistence layer with hash-chain integrity. |
-| **leash-ai-venv** | Unified lifecycle management for isolated task scopes. |
-| **leash-ai-backend-*** | Pluggable implementations for Pip, NPM, Brew, Keychain, etc. |
-| **leash-ai-client** | Async Rust SDK supporting UDS bridge. |
-| **leashd** | The trusted daemon; manages the state machine and brokered execution. |
-| **leash** | Management CLI for initialization, approvals, and manual requests. |
+| **openleash-core** | Shared domain models, policy engine, and configuration schema. |
+| **openleash-api** | gRPC API definition (.proto) and generated bindings. |
+| **openleash-db** | SQLite persistence layer with hash-chain integrity. |
+| **openleash-venv** | Unified lifecycle management for isolated task scopes. |
+| **openleash-backend-*** | Pluggable implementations for Pip, NPM, Brew, Keychain, etc. |
+| **openleash-client** | Async Rust SDK supporting UDS bridge. |
+| **openleashd** | The trusted daemon; manages the state machine and brokered execution. |
+| **openleash** | Management CLI for initialization, approvals, and manual requests. |
 
 ## 🔌 gRPC API
 
@@ -94,7 +94,7 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
 
 ## 🔒 Security & Privilege Model
 
-Leash AI bridges the **Sandbox Gap**. Agents run in restricted contexts (e.g. macOS Seatbelt) and "request" capabilities from the non-sandboxed `leashd`.
+OpenLeash bridges the **Sandbox Gap**. Agents run in restricted contexts (e.g. macOS Seatbelt) and "request" capabilities from the non-sandboxed `openleashd`.
 
 - **Approval Scopes**: Permissions can be granted `Once` (single request), for a `Task` (duration of the session), or `Permanent` (persisted in DB).
 - **Direct Execution**: Agents execute commands directly in their sandbox using PATH provided by `GetTaskEnvironment`. The daemon only brokers resources (packages, secrets), not command execution.

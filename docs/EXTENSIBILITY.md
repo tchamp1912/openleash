@@ -1,10 +1,10 @@
-# Leash AI - Extensibility Guide
+# OpenLeash - Extensibility Guide
 
-Leash AI is designed with a highly modular, trait-based architecture. You can easily extend the system by adding new resource backends or approval methods.
+OpenLeash is designed with a highly modular, trait-based architecture. You can easily extend the system by adding new resource backends or approval methods.
 
 ## 🏗️ Adding a New Resource Backend
 
-All resources are abstracted behind traits in the `leash-ai-backend` crate.
+All resources are abstracted behind traits in the `openleash-backend` crate.
 
 ### 1. Implement the `PackageBackend` Trait
 If you want to support a new package manager (e.g., `apt`, `cargo`), implement this trait:
@@ -40,17 +40,17 @@ pub trait ApprovalBackend: Send + Sync {
 }
 ```
 
-Example implementation: `leash-ai-backend-telegram`. You could add `leash-ai-backend-slack` or `leash-ai-backend-email`.
+Example implementation: `openleash-backend-telegram`. You could add `openleash-backend-slack` or `openleash-backend-email`.
 
 ## 🛠️ Registering Your Extension
 
 Once you've built your crate:
-1.  Add it to the `leashd` `Cargo.toml`.
-2.  Update the initialization logic in `crates/leashd/src/main.rs` to include your new backend based on the `LeashConfig`.
+1.  Add it to the `openleashd` `Cargo.toml`.
+2.  Update the initialization logic in `crates/openleashd/src/main.rs` to include your new backend based on the `LeashConfig`.
 
 ## 🧪 Testing Extensions
 
 We recommend following the existing pattern:
 1.  Create a `tests/` directory in your crate.
 2.  Add a sanity check for initialization.
-3.  Add an integration test in `leashd` that uses your backend in a full request lifecycle.
+3.  Add an integration test in `openleashd` that uses your backend in a full request lifecycle.

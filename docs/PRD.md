@@ -1,5 +1,5 @@
 # Product Requirements Document (PRD)
-# Leash AI
+# OpenLeash
 
 **Version**: 1.0  
 **Status**: Draft  
@@ -632,13 +632,13 @@ Create the permission management system for [OpenClaw](https://github.com/opencl
 
 ```bash
 # 1. Install (1 minute)
-pip install leash-ai
+pip install openleash
 
 # 2. Start daemon (30 seconds)
-leash start
+openleash start
 
 # 3. Load example policies (1 minute)
-leash policy add https://raw.githubusercontent.com/openclaw/leash-ai/main/examples/policies/quickstart.yaml
+leash policy add https://raw.githubusercontent.com/openclaw/openleash/main/examples/policies/quickstart.yaml
 
 # 4. Test (1 minute)
 python examples/quickstart.py
@@ -652,7 +652,7 @@ python examples/quickstart.py
 
 ```python
 # Import
-from leash_ai import LeashClient
+from openleash import LeashClient
 
 # Initialize
 client = PermissionClient(instance_id="my-agent")
@@ -687,7 +687,7 @@ policies:
 
 ```bash
 # View pending approvals (with context)
-$ leash approve pending
+$ openleash approve pending
 
 Pending Approvals:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -697,7 +697,7 @@ Pending Approvals:
     Policy: prod-secrets-require-approval
 
 # Approve with one command
-$ leash approve grant 1
+$ openleash approve grant 1
 
 ✓ Approved request #1
   Token issued (expires in 1h)
@@ -1051,7 +1051,7 @@ Key metrics to track:
 
 ```
 ┌─────────────────────────────────────────────────┐
-│ Leash AI - Health Dashboard  │
+│ OpenLeash - Health Dashboard  │
 ├─────────────────────────────────────────────────┤
 │ Adoption                                         │
 │   Active Installations:     157                 │
@@ -1088,7 +1088,7 @@ Key metrics to track:
 
 ### D. Competitive Analysis
 
-| Feature | Leash AI | Manual Approval | Vault | AWS Secrets Manager | Custom Scripts |
+| Feature | OpenLeash | Manual Approval | Vault | AWS Secrets Manager | Custom Scripts |
 |---------|---------------|-----------------|-------|---------------------|----------------|
 | AI-agent specific | ✅ Yes | ❌ No | ❌ No | ❌ No | ⚠ Maybe |
 | Rationale-based | ✅ Yes | ⚠ Manual | ❌ No | ❌ No | ❌ No |
@@ -1169,4 +1169,4 @@ Why or why not?
 
 **Questions or Feedback?**
 
-Discuss this PRD in [GitHub Discussions](https://github.com/openclaw/leash-ai/discussions) or email product@leash-ai.dev
+Discuss this PRD in [GitHub Discussions](https://github.com/openclaw/openleash/discussions) or email product@openleash.dev

@@ -1,0 +1,11 @@
+[package]
+name = "openleash-backend-keychain"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+openleash-core = { workspace = true }
+openleash-backend = { workspace = true }
+security-framework = { workspace = true }
+tokio = { workspace = true }
+async-trait = "0.1"

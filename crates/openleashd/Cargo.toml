@@ -1,0 +1,35 @@
+[package]
+name = "openleashd"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "openleashd"
+path = "src/main.rs"
+
+[dependencies]
+openleash-core = { workspace = true }
+openleash-api = { workspace = true }
+openleash-db = { workspace = true }
+openleash-backend = { workspace = true }
+openleash-backend-pip = { workspace = true }
+openleash-backend-brew = { workspace = true }
+openleash-backend-npm = { workspace = true }
+openleash-backend-keychain = { workspace = true }
+openleash-backend-telegram = { workspace = true }
+openleash-venv = { workspace = true }
+tokio = { workspace = true }
+tokio-stream = { workspace = true }
+tonic = { workspace = true }
+prost = { workspace = true }
+prost-types = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+clap = { workspace = true }
+serde = { workspace = true }
+serde_yaml = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+teloxide = { workspace = true }
+anyhow = { workspace = true }
+dptree = "0.3"
