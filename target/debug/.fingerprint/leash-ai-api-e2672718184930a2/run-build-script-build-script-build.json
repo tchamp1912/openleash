@@ -1,0 +1,1 @@
+{"rustc":7674676304537516793,"features":"","declared_features":"","target":0,"profile":0,"path":0,"deps":[[14784725615000979316,"build_script_build",false,2820195514708830451]],"local":[{"RerunIfChanged":{"output":"debug/build/leash-ai-api-e2672718184930a2/output","paths":["proto/leash/v1/leash.proto","proto"]}}],"rustflags":[],"config":0,"compile_kind":0}

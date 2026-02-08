@@ -150,7 +150,7 @@ impl Db {
             resource_type: match row.3.to_lowercase().as_str() {
                 "secret" => ResourceType::Secret,
                 "package" => ResourceType::Package,
-                "command" => ResourceType::Command,
+                "command" => ResourceType::System, // Legacy: Command resource type removed, map to System
                 "system" => ResourceType::System,
                 _ => ResourceType::Package,
             },
@@ -184,7 +184,7 @@ impl Db {
             resource_type: match row.3.to_lowercase().as_str() {
                 "secret" => ResourceType::Secret,
                 "package" => ResourceType::Package,
-                "command" => ResourceType::Command,
+                "command" => ResourceType::System, // Legacy: Command resource type removed, map to System
                 "system" => ResourceType::System,
                 _ => ResourceType::Package,
             },
@@ -307,7 +307,7 @@ impl Db {
                 resource_type: match r.3.to_lowercase().as_str() {
                     "secret" => ResourceType::Secret,
                     "package" => ResourceType::Package,
-                    "command" => ResourceType::Command,
+                    "command" => ResourceType::System, // Legacy: Command resource type removed, map to System
                     "system" => ResourceType::System,
                     _ => ResourceType::Package,
                 },
@@ -580,7 +580,7 @@ impl Db {
             resource_type: match row.4.to_lowercase().as_str() {
                 "secret" => ResourceType::Secret,
                 "package" => ResourceType::Package,
-                "command" => ResourceType::Command,
+                "command" => ResourceType::System, // Legacy: Command resource type removed, map to System
                 "system" => ResourceType::System,
                 _ => ResourceType::Package,
             },

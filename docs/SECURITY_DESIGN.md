@@ -8,7 +8,7 @@ The core security innovation of Leash AI is the **Sandbox Gap**.
 
 1.  **Confinement**: The AI agent is executed within a restricted context (e.g., macOS Seatbelt profile generated via `leash init`). This profile denies all network access, broad filesystem access, and process execution by default.
 2.  **Brokerage**: The only "hole" in the agent's sandbox is a Unix Domain Socket (/tmp/leash.sock). The agent cannot access the internet or secrets directly; it must *request* these capabilities from the `leashd` daemon.
-3.  **Trust Boundary**: `leashd` runs outside the agent's sandbox. It is the only component that can talk to the Keychain, run `pip`, or execute shell commands.
+3.  **Trust Boundary**: `leashd` runs outside the agent's sandbox. It brokers resources (packages, secrets, PATH) but does not execute commands. Agents execute commands directly in their sandbox, ensuring no privilege escalation.
 
 ## 📜 Rationale-Based Access
 

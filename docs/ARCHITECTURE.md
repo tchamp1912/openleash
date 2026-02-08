@@ -8,7 +8,7 @@ Leash AI provides a secure, auditable system for managing what AI agents can acc
 
 - **🔐 Secrets**: API keys and credentials brokered via macOS Keychain.
 - **📦 Packages**: Scoped package installation (pip, npm, brew) with session-aware tasks.
-- **⚡ Commands**: Brokered CLI execution with policy enforcement and output streaming.
+- **⚡ Execution**: Agents execute commands directly in sandbox using PATH provided by daemon.
 
 ### Why This Exists
 
@@ -31,7 +31,7 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
 │  │           leash-ai-client (Rust SDK)                 │  │
 │  │  • request_package()                                 │  │
 │  │  • request_secret() / store_secret()                 │  │
-│  │  • execute_command()                                 │  │
+│  │  • get_task_environment()                           │  │
 │  │  • start_task() / end_task()                         │  │
 │  └──────────────────┬───────────────────────────────────┘  │
 └─────────────────────┼───────────────────────────────────────┘
@@ -54,7 +54,7 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
 │                                         │                  │
 │                        ┌────────────────▼──────────────┐  │
 │                        │ Backends (Pip, NPM, Brew,     │  │
-│                        │ Keychain, Command, Telegram)  │  │
+│                        │ Keychain, Telegram)           │  │
 │                        └───────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -78,11 +78,11 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
 - `RequestPackage`: Install a package into a task-scoped environment.
 - `RequestSecret`: Fetch a secret from the Keychain backend.
 - `StoreSecret`: Securely save a new credential.
-- `ExecuteCommand`: Run a shell command via the daemon with PATH expansion.
 
 ### TaskService
 - `StartTask`: Establish a scoped environment with a mandatory TTL.
 - `EndTask`: Atomic teardown of an environment and its associated permissions.
+- `GetTaskEnvironment`: Get the PATH/bin directory for a task to enable direct command execution.
 
 ### ApprovalService
 - `ListPendingApprovals`: View requests waiting for human review.
@@ -97,5 +97,5 @@ The system is implemented as a **Rust workspace** with a **gRPC API**. The daemo
 Leash AI bridges the **Sandbox Gap**. Agents run in restricted contexts (e.g. macOS Seatbelt) and "request" capabilities from the non-sandboxed `leashd`.
 
 - **Approval Scopes**: Permissions can be granted `Once` (single request), for a `Task` (duration of the session), or `Permanent` (persisted in DB).
-- **PATH Expansion**: Brokered commands automatically include task binaries in their environment, avoiding the need for agents to know absolute paths.
+- **Direct Execution**: Agents execute commands directly in their sandbox using PATH provided by `GetTaskEnvironment`. The daemon only brokers resources (packages, secrets), not command execution.
 - **Hash-Chaining**: Every audit event includes a hash of the previous event, ensuring the history cannot be tampered with without detection.

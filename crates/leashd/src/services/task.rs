@@ -1,6 +1,6 @@
 use tonic::{Request, Response, Status};
 use leash_ai_api::pb::task_service_server::TaskService;
-use leash_ai_api::pb::{StartTaskRequest, StartTaskResponse, EndTaskRequest, EndTaskResponse};
+use leash_ai_api::pb::{StartTaskRequest, StartTaskResponse, EndTaskRequest, EndTaskResponse, GetTaskEnvironmentRequest, GetTaskEnvironmentResponse};
 use leash_ai_core::models::{Task, TaskStatus, ResourceType};
 use leash_ai_venv::VenvManager;
 use crate::LeashDaemon;
@@ -37,7 +37,7 @@ impl TaskService for LeashDaemon {
             .await
             .map_err(|e| Status::internal(format!("Failed to store task: {}", e)))?;
 
-        self.audit("TASK", "agent", ResourceType::Command, &task_id.to_string(), "START", "SUCCESS", HashMap::from([("name".to_string(), req.name)])).await?;
+        self.audit("TASK", "agent", ResourceType::System, &task_id.to_string(), "START", "SUCCESS", HashMap::from([("name".to_string(), req.name)])).await?;
 
         tracing::info!(task_id = %task_id, name = %task.name, "Task started");
 
@@ -57,10 +57,36 @@ impl TaskService for LeashDaemon {
 
         self.cleanup_task(&task_id, TaskStatus::Completed).await?;
         
-        self.audit("TASK", "agent", ResourceType::Command, &req.task_id, "END", "SUCCESS", HashMap::new()).await?;
+        self.audit("TASK", "agent", ResourceType::System, &req.task_id, "END", "SUCCESS", HashMap::new()).await?;
 
         tracing::info!(task_id = %task_id, "Task ended");
 
         Ok(Response::new(EndTaskResponse { success: true }))
+    }
+
+    async fn get_task_environment(
+        &self,
+        request: Request<GetTaskEnvironmentRequest>,
+    ) -> std::result::Result<Response<GetTaskEnvironmentResponse>, Status> {
+        let req = request.into_inner();
+        let task_id = Uuid::parse_str(&req.task_id)
+            .map_err(|_| Status::invalid_argument("Invalid task_id"))?;
+
+        let task = self.db.get_task(&task_id)
+            .await
+            .map_err(|_| Status::failed_precondition("Task not found or inactive"))?;
+        
+        if task.status != TaskStatus::Active {
+            return Err(Status::failed_precondition("Task is no longer active"));
+        }
+
+        let venv = VenvManager::new(&task.scope_path);
+        let bin_path = venv.bin_dir().to_string_lossy().to_string();
+
+        Ok(Response::new(GetTaskEnvironmentResponse {
+            bin_path,
+            scope_path: task.scope_path,
+            error_message: String::new(),
+        }))
     }
 }

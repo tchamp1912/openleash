@@ -33,12 +33,19 @@ leash exec --task_id <TASK_ID> --secret API_KEY=anthropic/api-key -- python3 scr
 ```
 - **Security Benefit**: You (the LLM) never see the plain-text secret. It only exists in the memory of the script you execute.
 
-### 4. Brokered Execution (No Secrets)
-If no secrets are needed, use `leash run`. This automatically prepends your task binaries to the `PATH`.
+### 4. Direct Execution (No Secrets)
+If no secrets are needed, get the task environment PATH and execute commands directly:
 
 ```bash
-leash run --task-id <TASK_ID> --reason "<rationale>" -- <command> <args>
+# Get PATH for the task
+eval $(leash run --task-id <TASK_ID>)
+
+# Now execute commands directly - they'll use packages from the task scope
+python3 script.py
+ls -la
 ```
+
+The `leash run` command exports the `PATH` and `VIRTUAL_ENV` environment variables that you can source to execute commands directly in your sandbox.
 
 ### 5. Cleanup
 Always terminate your task when the mission is finished to wipe the isolated environment and revoke all task-scoped permissions.

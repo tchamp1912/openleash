@@ -27,7 +27,7 @@ This document tracks the implementation progress of all features defined in the 
 | **NPM Backend** | 🟢 | Scoped Node.js package installation via `NPM_CONFIG_PREFIX`. |
 | **Brew Backend** | 🟢 | Portable Homebrew instances cloned into task scopes. |
 | **Keychain Backend** | 🟢 | Brokered access to macOS Keychain secrets. |
-| **Command Backend** | 🟢 | Brokered shell command execution with output streaming. |
+| **Resource Broker Model** | 🟢 | Daemon brokers resources (packages, secrets, PATH); agents execute commands directly in sandbox. |
 
 ## 3. Sandboxing & Isolation (P0)
 | Feature | Status | Description |
@@ -35,7 +35,7 @@ This document tracks the implementation progress of all features defined in the 
 | macOS Seatbelt Profiles | 🟢 | Tiered security profiles (Permissive/Restrictive). |
 | Feature-Aware Sandbox Generation | 🟢 | Profiles dynamically adapt to enabled backends. |
 | Task Scope Management | 🟢 | Automatic creation and cleanup of task-specific venvs. |
-| PATH Expansion | 🟢 | Automatic injection of task binaries into brokered execution. |
+| Task Environment API | 🟢 | `GetTaskEnvironment` provides PATH/bin directory for direct agent execution. |
 
 ## 4. Policy Engine (P0)
 | Feature | Status | Description |
@@ -78,10 +78,10 @@ Tracked items from project health and open-source readiness reviews.
 
 | Improvement | Status | Description |
 | :--- | :---: | :--- |
-| **ARCHITECTURE.md roadmap** | ⚪ | Update roadmap so "Implemented" vs "Planned" matches current code (audit, hash chain, policy engine, approval, ExecuteCommand are done). |
+| **ARCHITECTURE.md roadmap** | 🟢 | Updated to reflect resource broker model (GetTaskEnvironment instead of ExecuteCommand). |
 | **SECURITY.md contact** | ⚪ | Replace "add email here" placeholder with a real contact or GitHub Private Vulnerability Reporting only. |
-| **Test scope & robustness** | ⚪ | Add tests that assert policy deny/allow/pending, audit event + hash chain after sequences, full approval flow (pending → approve → retry), ExecuteCommand allowed vs denied and timeout. Consider one end-to-end integration test (e.g. start task → request package → exec). |
-| **OPENCLAW_INTEGRATION.md** | ⚪ | Align with gRPC + `leash-ai-client` and current RPCs (ExecuteCommand, approval, audit) if it still describes Python/HTTP-style APIs. |
+| **Test scope & robustness** | 🟢 | Tests updated for GetTaskEnvironment API. ExecuteCommand tests removed. |
+| **OPENCLAW_INTEGRATION.md** | 🟢 | Updated to reflect new execution model (direct execution with PATH). |
 | **Default policy documentation** | ⚪ | Document where policies are loaded from (e.g. `LEASHD_POLICIES_PATH`, init) and behavior when no policy file or empty policies (deny-all vs allow-all). |
 | **Linux secret backend** | ⚪ | Add SecretBackend for Linux Secret Service or Vault (ARCHITECTURE roadmap item). |
 | **NPM isolation note** | ⚪ | Document in SECURITY_DESIGN or ARCHITECTURE that NPM uses system `npm` with scoped prefix; isolation is weaker than pip (venv) and brew (portable). |

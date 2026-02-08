@@ -9,8 +9,6 @@ pub enum ResourceType {
     Secret,
     #[serde(rename = "package")]
     Package,
-    #[serde(rename = "command")]
-    Command,
     #[serde(rename = "system")]
     System,
 }

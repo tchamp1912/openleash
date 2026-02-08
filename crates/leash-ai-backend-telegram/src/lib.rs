@@ -33,7 +33,6 @@ impl ApprovalBackend for TelegramApprovalBackend {
         let (icon, title) = match req.resource_type {
             leash_ai_core::models::ResourceType::Secret => ("🔑", "Secret Request"),
             leash_ai_core::models::ResourceType::Package => ("📦", "Package Request"),
-            leash_ai_core::models::ResourceType::Command => ("💻", "Command Request"),
             leash_ai_core::models::ResourceType::System => {
                 if req.resource_id == "keychain-unlock" {
                     ("🔓", "Keychain Unlock Request")

@@ -8,12 +8,12 @@ service RequestService {
   rpc RequestPackage(RequestPackageRequest) returns (RequestPackageResponse);
   rpc RequestSecret(RequestSecretRequest) returns (RequestSecretResponse);
   rpc StoreSecret(StoreSecretRequest) returns (StoreSecretResponse);
-  rpc ExecuteCommand(ExecuteCommandRequest) returns (ExecuteCommandResponse);
 }
 
 service TaskService {
   rpc StartTask(StartTaskRequest) returns (StartTaskResponse);
   rpc EndTask(EndTaskRequest) returns (EndTaskResponse);
+  rpc GetTaskEnvironment(GetTaskEnvironmentRequest) returns (GetTaskEnvironmentResponse);
 }
 
 service ApprovalService {
@@ -72,26 +72,6 @@ message StoreSecretResponse {
   string error_message = 3;
 }
 
-message ExecuteCommandRequest {
-  string request_id = 1;
-  string command = 2;
-  repeated string args = 3;
-  string reason = 4;
-  optional string task_id = 5;
-  map<string, string> env_vars = 6;
-  optional string working_dir = 7;
-  uint32 timeout_seconds = 8;
-}
-
-message ExecuteCommandResponse {
-  string request_id = 1;
-  string status = 2; // EXECUTED, PENDING_APPROVAL, DENIED
-  int32 exit_code = 3;
-  string stdout = 4;
-  string stderr = 5;
-  string error_message = 6;
-}
-
 message StartTaskRequest {
   string name = 1;
   uint64 ttl_seconds = 2;
@@ -109,6 +89,16 @@ message EndTaskRequest {
 
 message EndTaskResponse {
   bool success = 1;
+}
+
+message GetTaskEnvironmentRequest {
+  string task_id = 1;
+}
+
+message GetTaskEnvironmentResponse {
+  string bin_path = 1;  // The bin directory path (e.g., /tmp/leash-tasks/task-xxx/bin)
+  string scope_path = 2; // The full scope path
+  string error_message = 3;
 }
 
 message ListPendingApprovalsRequest {}

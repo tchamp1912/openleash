@@ -1,0 +1,1 @@
+cargo:rustc-env=MIME_TYPES_GENERATED_PATH=/Users/tommy/Documents/Projects/leash-ai/target/debug/build/mime_guess-200f93bfe19e5f93/out/mime_types_generated.rs

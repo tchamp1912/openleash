@@ -41,7 +41,7 @@ fn test_approval_scope_inheritance() {
             id: "task-scope-policy".to_string(),
             name: "Task Scope".to_string(),
             description: None,
-            resource_type: ResourceType::Command,
+            resource_type: ResourceType::Secret,
             priority: 10,
             allowed_patterns: vec![".*".to_string()],
             max_ttl_seconds: 0,
@@ -53,7 +53,7 @@ fn test_approval_scope_inheritance() {
     let engine = PolicyEngine::new(policies);
 
     assert_eq!(
-        engine.evaluate(ResourceType::Command, "some-cmd"), 
+        engine.evaluate(ResourceType::Secret, "some-secret"), 
         Decision::PendingApproval(ApprovalScope::Task)
     );
 }
@@ -87,15 +87,15 @@ fn test_policy_evaluation_matching() {
 }
 
 #[test]
-fn test_command_policy_regex() {
+fn test_package_policy_regex() {
     let policies = vec![
         Policy {
-            id: "allow-ls".to_string(),
-            name: "Allow LS".to_string(),
+            id: "allow-requests".to_string(),
+            name: "Allow Requests".to_string(),
             description: None,
-            resource_type: ResourceType::Command,
+            resource_type: ResourceType::Package,
             priority: 10,
-            allowed_patterns: vec!["^ls$".to_string()],
+            allowed_patterns: vec!["^requests$".to_string()],
             max_ttl_seconds: 0,
             auto_approve: true,
             default_scope: ApprovalScope::Once,
@@ -104,6 +104,6 @@ fn test_command_policy_regex() {
 
     let engine = PolicyEngine::new(policies);
 
-    assert_eq!(engine.evaluate(ResourceType::Command, "ls"), Decision::Allow);
-    assert_eq!(engine.evaluate(ResourceType::Command, "ls -la"), Decision::Deny("No matching policy found".to_string()));
+    assert_eq!(engine.evaluate(ResourceType::Package, "requests"), Decision::Allow);
+    assert_eq!(engine.evaluate(ResourceType::Package, "requests==2.31.0"), Decision::Deny("No matching policy found".to_string()));
 }

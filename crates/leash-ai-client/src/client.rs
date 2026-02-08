@@ -2,7 +2,7 @@ use leash_ai_api::pb::request_service_client::RequestServiceClient;
 use leash_ai_api::pb::task_service_client::TaskServiceClient;
 use leash_ai_api::pb::approval_service_client::ApprovalServiceClient;
 use leash_ai_api::pb::audit_service_client::AuditServiceClient;
-use leash_ai_api::pb::{RequestPackageRequest, StartTaskRequest, EndTaskRequest, ListPendingApprovalsRequest, ApproveRequest, DenyRequest, PendingApproval, QueryAuditLogsRequest, AuditEntry};
+use leash_ai_api::pb::{RequestPackageRequest, StartTaskRequest, EndTaskRequest, GetTaskEnvironmentRequest, ListPendingApprovalsRequest, ApproveRequest, DenyRequest, PendingApproval, QueryAuditLogsRequest, AuditEntry};
 use leash_ai_core::{Result, LeashError};
 use tonic::transport::{Channel, Endpoint, Uri};
 use tower::service_fn;
@@ -74,6 +74,18 @@ impl LeashClient {
             task_id: task_id.to_string(),
         }).await.map_err(|e| LeashError::Internal(e.to_string()))?;
         Ok(())
+    }
+
+    pub async fn get_task_environment(&mut self, task_id: &str) -> Result<(String, String)> {
+        let response = self.task_client.get_task_environment(GetTaskEnvironmentRequest {
+            task_id: task_id.to_string(),
+        }).await.map_err(|e| LeashError::Internal(e.to_string()))?;
+        
+        let res = response.into_inner();
+        if !res.error_message.is_empty() {
+            return Err(LeashError::Backend(res.error_message));
+        }
+        Ok((res.bin_path, res.scope_path))
     }
 
     pub async fn request_secret(
@@ -149,34 +161,6 @@ impl LeashClient {
         } else {
             Err(LeashError::Backend(res.error_message))
         }
-    }
-
-    pub async fn execute_command(
-        &mut self,
-        command: &str,
-        args: Vec<String>,
-        reason: &str,
-        task_id: Option<String>,
-        env_vars: std::collections::HashMap<String, String>,
-        working_dir: Option<String>,
-        timeout_seconds: u32,
-    ) -> Result<leash_ai_api::pb::ExecuteCommandResponse> {
-        let request = tonic::Request::new(leash_ai_api::pb::ExecuteCommandRequest {
-            request_id: uuid::Uuid::new_v4().to_string(),
-            command: command.to_string(),
-            args,
-            reason: reason.to_string(),
-            task_id,
-            env_vars,
-            working_dir,
-            timeout_seconds,
-        });
-
-        let response = self.request_client.execute_command(request)
-            .await
-            .map_err(|e| LeashError::Internal(e.to_string()))?;
-
-        Ok(response.into_inner())
     }
 
     pub async fn list_pending_approvals(&mut self) -> Result<Vec<PendingApproval>> {

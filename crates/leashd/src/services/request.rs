@@ -1,6 +1,6 @@
 use tonic::{Request, Response, Status};
 use leash_ai_api::pb::request_service_server::RequestService;
-use leash_ai_api::pb::{RequestPackageRequest, RequestPackageResponse, RequestSecretRequest, RequestSecretResponse, StoreSecretRequest, StoreSecretResponse, ExecuteCommandRequest, ExecuteCommandResponse};
+use leash_ai_api::pb::{RequestPackageRequest, RequestPackageResponse, RequestSecretRequest, RequestSecretResponse, StoreSecretRequest, StoreSecretResponse};
 use leash_ai_core::models::{ApprovalRequest, ApprovalScope, Lease, LeaseStatus, PackageManager, ResourceType, TaskStatus};
 use leash_ai_backend::{PackageBackend, SecretBackend};
 use crate::LeashDaemon;
@@ -9,7 +9,6 @@ use uuid::Uuid;
 use chrono::Utc;
 use std::sync::Arc;
 use std::collections::HashMap;
-use tokio::time::Duration as TokioDuration;
 
 #[tonic::async_trait]
 impl RequestService for LeashDaemon {
@@ -346,109 +345,6 @@ impl RequestService for LeashDaemon {
                     request_id: req.request_id,
                     success: false,
                     error_message: e.to_string(),
-                }))
-            }
-        }
-    }
-
-    async fn execute_command(
-        &self,
-        request: Request<ExecuteCommandRequest>,
-    ) -> std::result::Result<Response<ExecuteCommandResponse>, Status> {
-        let req = request.into_inner();
-        tracing::info!(command = %req.command, "Command execution requested");
-
-        let task_id = req.task_id.as_ref().and_then(|id| Uuid::parse_str(id).ok());
-        let mut final_env = req.env_vars.clone();
-
-        if let Some(tid) = task_id {
-            let task = self.db.get_task(&tid).await
-                .map_err(|_| Status::failed_precondition("Task not found or inactive"))?;
-            
-            if task.status != TaskStatus::Active {
-                return Err(Status::failed_precondition("Task is no longer active"));
-            }
-
-            // Path Expansion: Prepend task bin to PATH
-            let bin_dir = format!("{}/bin", task.scope_path);
-            let current_path = std::env::var("PATH").unwrap_or_default();
-            final_env.insert("PATH".to_string(), format!("{}:{}", bin_dir, current_path));
-            final_env.insert("VIRTUAL_ENV".to_string(), task.scope_path);
-        }
-
-        // 0. Check for existing approved resources (Task/Permanent)
-        if let Ok(true) = self.db.check_approval(ResourceType::Command, &req.command, task_id).await {
-            tracing::info!(command = %req.command, "Command execution pre-approved via persistent scope");
-        } else {
-            let request_id = Uuid::parse_str(&req.request_id).unwrap_or_else(|_| Uuid::new_v4());
-            let decision = self.policy_engine.evaluate(ResourceType::Command, &req.command);
-            
-            match self.handle_approval_decision(
-                decision,
-                request_id,
-                ResourceType::Command,
-                req.command.clone(),
-                req.reason.clone(),
-                task_id,
-            ).await? {
-                ApprovalHandling::Approved => {
-                    // Proceed with command execution
-                }
-                ApprovalHandling::Denied(reason) => {
-                    self.audit("COMMAND", "agent", ResourceType::Command, &req.command, "EXECUTE", "DENIED", HashMap::from([("reason".to_string(), reason.clone())])).await?;
-                    return Err(Status::permission_denied(reason));
-                }
-                ApprovalHandling::Pending => {
-                    return Ok(Response::new(ExecuteCommandResponse {
-                        request_id: req.request_id,
-                        status: "PENDING_APPROVAL".to_string(),
-                        ..Default::default()
-                    }));
-                }
-            }
-        }
-
-        let mut cmd = tokio::process::Command::new(&req.command);
-        cmd.args(&req.args);
-        cmd.envs(&final_env);
-        if let Some(wd) = &req.working_dir {
-            cmd.current_dir(wd);
-        }
-
-        let timeout = TokioDuration::from_secs(req.timeout_seconds.clamp(1, 300) as u64);
-        
-        let result = tokio::time::timeout(timeout, cmd.output()).await;
-
-        match result {
-            Ok(Ok(output)) => {
-                let status_str = if output.status.success() { "SUCCESS" } else { "FAILED" };
-                self.audit("COMMAND", "agent", ResourceType::Command, &req.command, "EXECUTE", status_str, HashMap::new()).await?;
-
-                Ok(Response::new(ExecuteCommandResponse {
-                    request_id: req.request_id,
-                    status: "EXECUTED".to_string(),
-                    exit_code: output.status.code().unwrap_or(-1),
-                    stdout: String::from_utf8_lossy(&output.stdout).to_string(),
-                    stderr: String::from_utf8_lossy(&output.stderr).to_string(),
-                    error_message: String::new(),
-                }))
-            }
-            Ok(Err(e)) => {
-                self.audit("COMMAND", "agent", ResourceType::Command, &req.command, "EXECUTE", "ERROR", HashMap::from([("error".to_string(), e.to_string())])).await?;
-                Ok(Response::new(ExecuteCommandResponse {
-                    request_id: req.request_id,
-                    status: "ERROR".to_string(),
-                    error_message: e.to_string(),
-                    ..Default::default()
-                }))
-            }
-            Err(_) => {
-                self.audit("COMMAND", "agent", ResourceType::Command, &req.command, "EXECUTE", "TIMEOUT", HashMap::new()).await?;
-                Ok(Response::new(ExecuteCommandResponse {
-                    request_id: req.request_id,
-                    status: "TIMEOUT".to_string(),
-                    error_message: "Command timed out".to_string(),
-                    ..Default::default()
                 }))
             }
         }

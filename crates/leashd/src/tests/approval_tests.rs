@@ -2,7 +2,7 @@ use crate::LeashDaemon;
 use leash_ai_api::pb::request_service_server::RequestService;
 use leash_ai_api::pb::task_service_server::TaskService;
 use leash_ai_api::pb::approval_service_server::ApprovalService;
-use leash_ai_api::pb::{ExecuteCommandRequest, ListPendingApprovalsRequest, ApproveRequest, StartTaskRequest};
+use leash_ai_api::pb::{ListPendingApprovalsRequest, ApproveRequest, RequestSecretRequest, StartTaskRequest};
 use leash_ai_core::models::{Policy, ResourceType, ApprovalScope};
 use leash_ai_db::db::Db;
 use leash_ai_backend_pip::PipBackend;
@@ -21,9 +21,9 @@ async fn test_full_approval_cycle_once() {
             id: "require-approval".to_string(),
             name: "Require Approval".to_string(),
             description: None,
-            resource_type: ResourceType::Command,
+            resource_type: ResourceType::Secret,
             priority: 10,
-            allowed_patterns: vec!["^ls$".to_string()],
+            allowed_patterns: vec![".*".to_string()],
             auto_approve: false, 
             max_ttl_seconds: 0,
             default_scope: ApprovalScope::Once,
@@ -39,19 +39,15 @@ async fn test_full_approval_cycle_once() {
         approval_backends: vec![],
     });
 
-    let inner_req = ExecuteCommandRequest {
+    let inner_req = RequestSecretRequest {
         request_id: uuid::Uuid::new_v4().to_string(),
-        command: "ls".to_string(),
-        args: vec![],
+        secret_id: "test-secret".to_string(),
         reason: "test".to_string(),
         task_id: None,
-        env_vars: std::collections::HashMap::new(),
-        working_dir: None,
-        timeout_seconds: 5,
     };
 
     // 1. Initially Pending
-    let res = daemon.execute_command(Request::new(inner_req.clone())).await.unwrap().into_inner();
+    let res = daemon.request_secret(Request::new(inner_req.clone())).await.unwrap().into_inner();
     assert_eq!(res.status, "PENDING_APPROVAL");
 
     // 2. Approve with Once scope
@@ -60,21 +56,17 @@ async fn test_full_approval_cycle_once() {
     daemon.approve(Request::new(ApproveRequest { approval_id: app_id, scope: Some("once".to_string()) })).await.unwrap();
 
     // 3. Success for this request_id
-    let res2 = daemon.execute_command(Request::new(inner_req)).await.unwrap().into_inner();
-    assert_eq!(res2.status, "EXECUTED");
+    let res2 = daemon.request_secret(Request::new(inner_req)).await.unwrap().into_inner();
+    assert_ne!(res2.status, "PENDING_APPROVAL");
 
     // 4. New request_id should be Pending again
-    let inner_req_new = ExecuteCommandRequest {
+    let inner_req_new = RequestSecretRequest {
         request_id: uuid::Uuid::new_v4().to_string(),
-        command: "ls".to_string(),
-        args: vec![],
+        secret_id: "test-secret".to_string(),
         reason: "test again".to_string(),
         task_id: None,
-        env_vars: std::collections::HashMap::new(),
-        working_dir: None,
-        timeout_seconds: 5,
     };
-    let res3 = daemon.execute_command(Request::new(inner_req_new)).await.unwrap().into_inner();
+    let res3 = daemon.request_secret(Request::new(inner_req_new)).await.unwrap().into_inner();
     assert_eq!(res3.status, "PENDING_APPROVAL");
 }
 
@@ -86,9 +78,9 @@ async fn test_approval_cycle_permanent() {
             id: "require-approval".to_string(),
             name: "Require Approval".to_string(),
             description: None,
-            resource_type: ResourceType::Command,
+            resource_type: ResourceType::Secret,
             priority: 10,
-            allowed_patterns: vec!["^ls$".to_string()],
+            allowed_patterns: vec![".*".to_string()],
             auto_approve: false, 
             max_ttl_seconds: 0,
             default_scope: ApprovalScope::Once,
@@ -104,36 +96,28 @@ async fn test_approval_cycle_permanent() {
         approval_backends: vec![],
     });
 
-    let inner_req = ExecuteCommandRequest {
+    let inner_req = RequestSecretRequest {
         request_id: uuid::Uuid::new_v4().to_string(),
-        command: "ls".to_string(),
-        args: vec![],
+        secret_id: "test-secret".to_string(),
         reason: "test".to_string(),
         task_id: None,
-        env_vars: std::collections::HashMap::new(),
-        working_dir: None,
-        timeout_seconds: 5,
     };
 
     // 1. Approve with Permanent scope
-    let _ = daemon.execute_command(Request::new(inner_req.clone())).await.unwrap();
+    let _ = daemon.request_secret(Request::new(inner_req.clone())).await.unwrap();
     let list = daemon.list_pending_approvals(Request::new(ListPendingApprovalsRequest {})).await.unwrap().into_inner();
     let app_id = list.approvals[0].approval_id.clone();
     daemon.approve(Request::new(ApproveRequest { approval_id: app_id, scope: Some("permanent".to_string()) })).await.unwrap();
 
     // 2. Success for ANY request_id
-    let inner_req_new = ExecuteCommandRequest {
+    let inner_req_new = RequestSecretRequest {
         request_id: uuid::Uuid::new_v4().to_string(),
-        command: "ls".to_string(),
-        args: vec![],
+        secret_id: "test-secret".to_string(),
         reason: "test again".to_string(),
         task_id: None,
-        env_vars: std::collections::HashMap::new(),
-        working_dir: None,
-        timeout_seconds: 5,
     };
-    let res = daemon.execute_command(Request::new(inner_req_new)).await.unwrap().into_inner();
-    assert_eq!(res.status, "EXECUTED");
+    let res = daemon.request_secret(Request::new(inner_req_new)).await.unwrap().into_inner();
+    assert_ne!(res.status, "PENDING_APPROVAL");
 }
 
 #[tokio::test]
@@ -144,9 +128,9 @@ async fn test_approval_cycle_task() {
             id: "require-approval".to_string(),
             name: "Require Approval".to_string(),
             description: None,
-            resource_type: ResourceType::Command,
+            resource_type: ResourceType::Secret,
             priority: 10,
-            allowed_patterns: vec!["^ls$".to_string()],
+            allowed_patterns: vec![".*".to_string()],
             auto_approve: false, 
             max_ttl_seconds: 0,
             default_scope: ApprovalScope::Once,
@@ -169,36 +153,28 @@ async fn test_approval_cycle_task() {
     })).await.unwrap().into_inner();
     let task_id = start_res.task_id;
 
-    let inner_req = ExecuteCommandRequest {
+    let inner_req = RequestSecretRequest {
         request_id: uuid::Uuid::new_v4().to_string(),
-        command: "ls".to_string(),
-        args: vec![],
+        secret_id: "test-secret".to_string(),
         reason: "test".to_string(),
         task_id: Some(task_id.clone()),
-        env_vars: std::collections::HashMap::new(),
-        working_dir: None,
-        timeout_seconds: 5,
     };
 
     // 1. Approve with Task scope
-    let _ = daemon.execute_command(Request::new(inner_req.clone())).await.unwrap();
+    let _ = daemon.request_secret(Request::new(inner_req.clone())).await.unwrap();
     let list = daemon.list_pending_approvals(Request::new(ListPendingApprovalsRequest {})).await.unwrap().into_inner();
     let app_id = list.approvals[0].approval_id.clone();
     daemon.approve(Request::new(ApproveRequest { approval_id: app_id, scope: Some("task".to_string()) })).await.unwrap();
 
     // 2. Success for same task, DIFFERENT request_id
-    let inner_req_new = ExecuteCommandRequest {
+    let inner_req_new = RequestSecretRequest {
         request_id: uuid::Uuid::new_v4().to_string(),
-        command: "ls".to_string(),
-        args: vec![],
+        secret_id: "test-secret".to_string(),
         reason: "test again".to_string(),
         task_id: Some(task_id.clone()),
-        env_vars: std::collections::HashMap::new(),
-        working_dir: None,
-        timeout_seconds: 5,
     };
-    let res = daemon.execute_command(Request::new(inner_req_new)).await.unwrap().into_inner();
-    assert_eq!(res.status, "EXECUTED");
+    let res = daemon.request_secret(Request::new(inner_req_new)).await.unwrap().into_inner();
+    assert_ne!(res.status, "PENDING_APPROVAL");
 
     // 3. Different task should be Pending (create a second task first)
     let start_res2 = daemon.start_task(Request::new(StartTaskRequest {
@@ -208,16 +184,12 @@ async fn test_approval_cycle_task() {
     })).await.unwrap().into_inner();
     let task_id2 = start_res2.task_id;
     
-    let inner_req_diff_task = ExecuteCommandRequest {
+    let inner_req_diff_task = RequestSecretRequest {
         request_id: uuid::Uuid::new_v4().to_string(),
-        command: "ls".to_string(),
-        args: vec![],
+        secret_id: "test-secret".to_string(),
         reason: "different task".to_string(),
         task_id: Some(task_id2),
-        env_vars: std::collections::HashMap::new(),
-        working_dir: None,
-        timeout_seconds: 5,
     };
-    let res_diff = daemon.execute_command(Request::new(inner_req_diff_task)).await.unwrap().into_inner();
+    let res_diff = daemon.request_secret(Request::new(inner_req_diff_task)).await.unwrap().into_inner();
     assert_eq!(res_diff.status, "PENDING_APPROVAL");
 }

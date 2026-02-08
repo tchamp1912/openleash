@@ -16,10 +16,10 @@ Expose these three commands to your agent's tool environment:
 **CLI Command**: `leash request install --manager pip --package "{{package}}" --task_id {{task_id}} --reason "{{rationale}}"`
 **Agent Goal**: Dynamically add capabilities to the current task.
 
-### 3. `leash_run(command, task_id)`
-**Description**: Call this to execute any shell command or script. 
-**CLI Command**: `leash run --task-id {{task_id}} --reason "{{rationale}}" -- {{command}}`
-**Agent Goal**: Execute code safely. Leash will handle finding the binaries in your task's private scope.
+### 3. `leash_get_task_path(task_id)`
+**Description**: Get the task environment PATH for direct command execution.
+**CLI Command**: `leash run --task-id {{task_id}}`
+**Agent Goal**: Get PATH environment variable to execute commands directly. Use with: `eval $(leash run --task-id {{task_id}})` then execute commands normally.
 
 ---
 
@@ -50,8 +50,8 @@ When configuring your agent, define the tool like this:
 2.  **Agent**: *Checks environment, notices `pandas` is missing.*
 3.  **Agent**: *Invokes Tool* → `leash task start --name "Web Scrape"`
 4.  **Agent**: *Invokes Tool* → `leash request install --package pandas --task-id <ID> --reason "CSV processing"`
-5.  **Agent**: *Invokes Tool* → `leash run --task-id <ID> -- python3 scrape.py`
+5.  **Agent**: *Invokes Tool* → `eval $(leash run --task-id <ID>)` then executes `python3 scrape.py` directly
 6.  **Agent**: *Invokes Tool* → `leash task end --task-id <ID>`
 
 ## 🔒 Security Note
-Because the agent is running inside a **macOS Sandbox** (defined in `agent.sb`), it cannot run `pip install` or `python` directly on your host. It **must** use the `leash` CLI to "ask" the daemon to do it. This ensures every action is policy-checked and audited.
+Because the agent is running inside a **macOS Sandbox** (defined in `agent.sb`), it cannot run `pip install` or access secrets directly. It **must** use the `leash` CLI to request packages and secrets from the daemon. Once packages are installed, the agent executes commands directly in its sandbox using the PATH provided by `leash run`. This ensures resource access is policy-checked and audited, while execution happens in the sandbox without privilege escalation.

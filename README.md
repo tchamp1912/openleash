@@ -40,7 +40,11 @@ leash task start --name "Data Analysis" --base-path /tmp/agent-work --ttl 3600
 # Install a package into that task's scope
 leash request install --manager pip --package pandas --task-id <TASK_ID>
 
-# Run a script with a secret injected
+# Get task PATH and execute commands directly
+eval $(leash run --task-id <TASK_ID>)
+python my_agent.py
+
+# Or execute with secrets injected (secrets never touch disk)
 leash exec --task-id <TASK_ID> --secret API_KEY=openai/api-key -- python my_agent.py
 ```
 

@@ -39,17 +39,10 @@ enum Commands {
         #[command(subcommand)]
         operation: TaskCommands,
     },
-    /// Run a command via the daemon (brokered execution)
+    /// Get task environment PATH for direct execution
     Run {
         #[arg(short, long)]
-        task_id: Option<String>,
-        #[arg(short, long)]
-        reason: String,
-        #[arg(short, long, default_value_t = 60)]
-        timeout: u32,
-        /// The command and arguments to run
-        #[arg(last = true)]
-        command: Vec<String>,
+        task_id: String,
     },
     /// Sandbox operations
     Sandbox {
@@ -244,17 +237,6 @@ async fn main() -> anyhow::Result<()> {
                     priority: 10,
                     allowed_patterns: vec!["requests".to_string(), "six".to_string(), "numpy".to_string()],
                     max_ttl_seconds: 3600,
-                    auto_approve: true,
-                    default_scope: leash_ai_core::models::ApprovalScope::Once,
-                },
-                leash_ai_core::models::Policy {
-                    id: "allow-safe-commands".to_string(),
-                    name: "Safe Commands".to_string(),
-                    description: Some("Allow common safe commands".to_string()),
-                    resource_type: leash_ai_core::models::ResourceType::Command,
-                    priority: 10,
-                    allowed_patterns: vec!["^ls$".to_string(), "^cat$".to_string(), "^grep$".to_string(), "^echo$".to_string(), "^python3$".to_string()],
-                    max_ttl_seconds: 0,
                     auto_approve: true,
                     default_scope: leash_ai_core::models::ApprovalScope::Once,
                 },
@@ -492,37 +474,19 @@ WantedBy=default.target
                 println!("Task {} ended and scope cleaned up.", task_id);
             }
         },
-        Commands::Run { task_id, reason, timeout, command } => {
-            if command.is_empty() {
-                anyhow::bail!("No command provided to run");
-            }
-
+        Commands::Run { task_id } => {
             let mut client = LeashClient::connect(cli.server).await
                 .context("Failed to connect to Leash daemon")?;
 
-            let cmd = &command[0];
-            let args = command[1..].to_vec();
+            let (bin_path, scope_path) = client.get_task_environment(&task_id).await?;
 
-            let res = client.execute_command(
-                cmd,
-                args,
-                reason,
-                task_id.clone(),
-                HashMap::new(),
-                None,
-                *timeout,
-            ).await?;
-
-            if res.status == "EXECUTED" {
-                print!("{}", res.stdout);
-                eprint!("{}", res.stderr);
-                std::process::exit(res.exit_code);
-            } else {
-                println!("Command Status: {}", res.status);
-                if !res.error_message.is_empty() {
-                    println!("Error: {}", res.error_message);
-                }
-            }
+            // Print PATH that agent can use
+            let current_path = std::env::var("PATH").unwrap_or_default();
+            let new_path = format!("{}:{}", bin_path, current_path);
+            
+            println!("export PATH=\"{}\"", new_path);
+            println!("export VIRTUAL_ENV=\"{}\"", scope_path);
+            println!("# Use these environment variables to execute commands directly");
         },
         Commands::Approve { operation } => match operation {
             ApprovalCommands::List => {
