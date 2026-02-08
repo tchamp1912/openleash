@@ -21,25 +21,26 @@ Built for [OpenClaw](https://github.com/openclaw/openclaw) and compatible with a
 
 ## Quick Start
 
-### Prerequisites
-
-- **Rust**: Latest stable version ([rustup](https://rustup.rs/))
-- **macOS**: Required for the Keychain backend (v0)
-- **Protobuf**: `brew install protobuf`
-
 ### Installation
 
+**Homebrew (Recommended):**
+
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/openleash.git
-cd openleash
-
-# Build the project
-cargo build
-
-# Run tests
-cargo test
+brew tap tchamp1912/openleash
+brew install openleash
 ```
+
+**Build from Source:**
+
+```bash
+git clone https://github.com/tchamp1912/openleash.git
+cd openleash
+cargo build --release
+```
+
+**Prerequisites:** macOS 12+, Rust ([rustup](https://rustup.rs/)), Protocol Buffers (`brew install protobuf`)
+
+For detailed instructions, see [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
 ### Running the Daemon
 
@@ -81,6 +82,7 @@ security add-generic-password -s openleash -a "anthropic/api-key" -w "$ANTHROPIC
 
 ## Documentation
 
+- **[Installation Guide](docs/INSTALLATION.md)**: Comprehensive installation instructions, prerequisites, and troubleshooting
 - **[Architecture](docs/ARCHITECTURE.md)**: Deep dive into the multi-crate structure and gRPC design
 - **[Core Specification](docs/CORE_SPEC.md)**: Canonical source of truth for architecture, state transitions, and data models
 - **[Security Design](docs/SECURITY_DESIGN.md)**: Detailed explanation of the "Sandbox Gap" and elevation flow
