@@ -1,0 +1,123 @@
+# Leash AI - First Mission Walkthrough
+
+This guide will take you from a fresh installation to running a sandboxed AI agent mission with Leash AI.
+
+## Step 1: Initialization
+
+First, let's set up your local environment.
+
+```bash
+# Run the onboarding wizard
+leash init
+```
+
+This command creates a `~/.leash` directory containing:
+- `config.yaml`: Global settings for the daemon.
+- `policies.yaml`: Rules for what your agent can access.
+- `agent.sb`: A macOS sandbox profile tailored for your machine.
+
+## Step 2: Configure a Strict Policy
+
+Open `~/.leash/policies.yaml`. By default, it allows everything. Let's make it strict to see Leash in action.
+
+Replace the content with this:
+
+```yaml
+- id: "deny-all"
+  name: "Deny All"
+  resource_type: Package
+  priority: 0
+  allowed_patterns: [".*"]
+  max_ttl_seconds: 0
+  auto_approve: false
+```
+
+## Step 3: Start the Gatekeeper
+
+Start the Leash AI daemon in a separate terminal:
+
+```bash
+leashd
+```
+
+## Step 4: The "Fail-Closed" Test
+
+Try to install a package while inside the sandbox. It should fail because our policy is "deny-all".
+
+```bash
+# Run the leash client inside the macOS sandbox
+sandbox-exec -f ~/.leash/agent.sb leash request install --manager pip --package requests --scope /tmp/test-scope --reason "testing"
+```
+
+You should see a **Permission Denied** error. This confirms that your agent is properly "leashed."
+
+## Step 5: Granting Permission
+
+Update `~/.leash/policies.yaml` to allow the `requests` library:
+
+```yaml
+- id: "allow-requests"
+  name: "Allow Requests Library"
+  resource_type: Package
+  priority: 10
+  allowed_patterns: ["^requests$"]
+  max_ttl_seconds: 3600
+  auto_approve: true
+
+- id: "deny-all"
+  ...
+```
+
+Restart the daemon (or wait for it to reload if implemented).
+
+## Step 6: The Mission
+
+Now, let's run a full mission.
+
+1.  **Start a Task**:
+    ```bash
+    leash task start --name "Web Scraping" --base-path /tmp/agent-work --ttl 3600
+    # Copy the TASK_ID and SCOPE_PATH from the output
+    ```
+
+2.  **Install the Tool**:
+    ```bash
+    leash request install --manager pip --package requests --task-id <TASK_ID>
+    ```
+
+3.  **Run the Agent**:
+    ```bash
+    # Brokered execution: the daemon runs the command and streams output
+    leash run --task-id <TASK_ID> --reason "running scraper" -- python my_scraper.py
+    ```
+
+    *Note: `leash run` is different from `leash exec`. `run` happens via the daemon (allowing the daemon to enforce strict command-level policies), whereas `exec` happens locally but with injected secrets.*
+
+4.  **Cleanup**:
+    ```bash
+    leash task end --task-id <TASK_ID>
+    ```
+
+## Step 7: Audit the Evidence
+
+Leash AI maintains a hash-chained ledger of every action. You can inspect this at any time.
+
+```bash
+# List the last 10 operations
+leash audit list --limit 10
+
+# Verify the integrity of the ledger
+leash audit verify
+```
+
+Verification: `ls /tmp/agent-work` should show that the environment has been completely removed.
+
+## Conclusion
+
+You've successfully:
+1.  Enforced a security boundary.
+2.  Audited a request.
+3.  Provided a scoped environment.
+4.  Ensured clean resource teardown.
+
+Your agent is now safe to work!

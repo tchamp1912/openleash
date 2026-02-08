@@ -2,224 +2,61 @@
 
 ## 🎉 What We Built
 
-Leash AI is a complete, production-ready permission and access management system designed specifically for [OpenClaw](https://github.com/openclaw/openclaw) AI agents running on **macOS**. Keep your AI agent on a leash.
+Leash AI is a comprehensive, production-ready permission and access management system designed specifically for AI agents (built for [OpenClaw](https://github.com/openclaw/openclaw)) running on **macOS**. It provides a secure "Sandbox Gap" between restricted agents and sensitive system resources.
 
-## 📦 Core Focus
+## 📦 Core Pillars
 
-**Primary Use Case**: OpenClaw AI agent integration
-**Primary Platform**: macOS 12+ (Monterey and later)
-**Primary Backends**: macOS Keychain + Homebrew
+1.  **🔐 Secrets**: Brokered access to macOS Keychain. Secrets are injected only into the memory of child processes, never touching the agent's disk.
+2.  **📦 Packages**: Scoped installation of `pip`, `npm`, and `brew` packages into task-specific isolated environments (venvs) with automatic cleanup.
+3.  **⚡ Commands**: Brokered shell execution via the daemon. Supports policy enforcement, standard stream capture, and automatic PATH expansion for task tools.
 
-### Why This Matters
+## 🚀 Key Deliverables
 
-OpenClaw users face real operational challenges:
-- Manual tool installation
-- Plaintext API keys in config
-- No remote approval
-- Token sprawl without revocation
-- Context window security risks
+### Core Framework (Rust)
+- **Unified Daemon (`leashd`)**: Managed state machine for all requests, tasks, and audit logs.
+- **Async SDK (`leash-ai-client`)**: Developer-friendly library for integrating Leash into any AI agent framework.
+- **Management CLI (`leash`)**: Powerful toolkit for environment initialization, manual approvals, and audit verification.
 
-Leash AI solves **every single one** of these problems.
+### Security Infrastructure
+- **Policy Engine**: Regex-based pattern matching with priority weights and "deny-by-default" logic.
+- **macOS Seatbelt Integration**: Tiered sandbox profiles (Permissive/Restrictive) that dynamically adapt to your enabled features.
+- **Hash-Chained Audit Ledger**: Immutable record of all system actions secured with SHA-256 integrity chaining.
 
-## 📦 Deliverables
+### Human-in-the-Loop
+- **Interactive CLI**: Real-time management of pending requests.
+- **Telegram Integration**: Mobile notifications with one-tap Approve/Deny buttons for remote agent management.
+- **Approval Scopes**: Granular trust levels (Once, Task, Permanent) to reduce reviewer fatigue.
 
-### Core Components
+## 🏗️ Technical Highlights
 
-1. **Abstract Backend Layer** (`src/leash_ai/backends/`)
-   - ✅ Secret storage abstraction (OS Keychain, Vault, AWS Secrets Manager)
-   - ✅ Package manager abstraction (Homebrew, APT, Snap)
-   - ✅ CLI execution abstraction (bash, sudo, PATH management)
+- **Crates**: 13 modular Rust crates for high maintainability.
+- **IPC**: Secure Unix Domain Sockets (/tmp/leash.sock) bridging the sandbox gap.
+- **Database**: SQLite with async SQLx for persistent tasks, leases, and audit integrity.
+- **Reliability**: 27+ integration tests covering brokered execution, persistent approvals, and task lifecycle.
 
-2. **Concrete Implementations**
-   - ✅ macOS Keychain backend for secrets
-   - ✅ Homebrew backend for package installation
-   - ✅ Generic OS abstraction for extensibility
+## 🎯 Design Philosophy
 
-3. **Permission Policy Engine** (`src/leash_ai/policies/`)
-   - ✅ Fine-grained policy definitions (YAML-based)
-   - ✅ Time-based access windows
-   - ✅ Auto-approval patterns
-   - ✅ Rationale validation
-   - ✅ Priority-based policy matching
+1.  **Sandbox Gap**: The agent is always confined; only the daemon is trusted.
+2.  **Rationale First**: Agents must justify every action before it's evaluated.
+3.  **Fail-Secure**: Any error or policy miss results in an immediate DENY.
+4.  **Ephemeral by Default**: Environments and permissions are wiped as soon as a task ends.
 
-4. **Client SDK** (`src/leash_ai/client/`)
-   - ✅ Simple async API for OpenClaw instances
-   - ✅ Automatic polling for approval
-   - ✅ Token management
-   - ✅ Clean error handling
+## 💡 Quick Start
 
-5. **Management CLI** (`src/leash_ai/daemon/cli.py`)
-   - ✅ Daemon control (start/stop/status)
-   - ✅ Policy management
-   - ✅ Audit log viewing
-   - ✅ Approval workflow
-   - ✅ Statistics and monitoring
+```bash
+# 1. Initialize environment
+leash init
 
-### Documentation
+# 2. Start the Gatekeeper
+leashd &
 
-1. **README.md** - Project overview and quick start
-2. **ARCHITECTURE.md** - Detailed technical documentation with diagrams
-3. **SETUP.md** - Complete installation and configuration guide
-4. **Example Policies** - 15+ real-world policy examples
-5. **Usage Examples** - Complete workflows demonstrating the system
-
-## 🔑 Key Features
-
-### Security First
-- **Rationale-based requests**: Every access requires explanation
-- **Time-limited permissions**: Auto-expiring tokens
-- **Audit trail**: Complete logging of all access
-- **Policy enforcement**: Fine-grained control over what's allowed
-- **Human-in-the-loop**: Approval workflow for sensitive operations
-
-### Developer Experience
-- **Simple SDK**: `await client.request_secret(key, rationale)`
-- **Pluggable backends**: Easy to add new secret stores or package managers
-- **YAML policies**: Human-readable configuration
-- **Auto-approval**: Smart patterns for common safe operations
-- **CLI tools**: Full management without code
-
-### Operations
-- **Audit logs**: Who accessed what and why
-- **Metrics**: Usage statistics and trends
-- **Policy testing**: Validate policies before deployment
-- **Temporary access**: Packages auto-removed after use
-- **Integration ready**: Works with existing tools (Vault, Keychain, etc.)
-
-## 🏗️ Architecture Highlights
-
+# 3. Run a sandboxed mission
+leash task start --name "Research"
+leash run --task-id <ID> --reason "data analysis" -- python3 -c "print('Leashed!')"
 ```
-OpenClaw Instance
-      ↓ (requests permission)
-Permission Daemon
-      ↓ (evaluates policies)
-  Auto-Approve ←→ Manual Approval
-      ↓ (grants token)
-Backend (Secrets/Packages/CLI)
-      ↓ (executes)
-Actual Resource Access
-```
-
-### Modular Design
-
-Every component follows the **Abstract Base Class** pattern:
-- New backends? Just implement the ABC
-- New approval methods? Plug into the workflow
-- New policy types? Extend the policy engine
-
-## 📋 Example Usage
-
-### Request Secret Access
-```python
-secret = await client.request_secret(
-    key="aws/production/api-key",
-    rationale="Emergency hotfix deployment to fix login issue"
-)
-```
-
-### Install Temporary Package
-```python
-package = await client.request_package(
-    name="kubectl",
-    rationale="Debug production k8s cluster issue",
-    temporary=True,
-    ttl=1800  # Auto-remove after 30 minutes
-)
-```
-
-### Execute Audited CLI Command
-```python
-result = await client.execute_command(
-    command="aws",
-    args=["s3", "sync", "./dist", "s3://prod-bucket"],
-    rationale="Deploy updated frontend assets"
-)
-```
-
-## 🎯 Policy Examples
-
-The system includes production-ready policies for:
-- AWS credentials (prod requires approval, dev auto-approved)
-- Package installation (dev tools auto, cloud CLIs need approval)
-- CLI commands (read-only auto, write operations controlled)
-- Time-based access (business hours only for sudo)
-- Instance-based restrictions (test instances blocked from prod secrets)
-
-## 🚀 Next Steps
-
-### Immediate (Can Use Today)
-1. Install: `pip install -e .`
-2. Start daemon: `leash start`
-3. Load policies: `leash policy add examples/policies/example-policies.yaml`
-4. Use SDK in OpenClaw
-
-### Short-term Enhancements
-- [ ] Web UI for approval workflow
-- [ ] Slack/email notifications
-- [ ] Linux Secret Service backend
-- [ ] APT package manager backend
-- [ ] Windows support
-
-### Long-term Vision
-- [ ] Multi-tenant support
-- [ ] Policy inheritance and templates
-- [ ] Advanced analytics and ML for anomaly detection
-- [ ] Integration with enterprise IAM systems
-- [ ] Compliance reporting (SOC2, HIPAA, etc.)
-
-## 📊 Project Stats
-
-- **Lines of Code**: ~2,500
-- **Core Abstractions**: 3 (Secrets, Packages, CLI)
-- **Concrete Backends**: 2 (macOS Keychain, Homebrew)
-- **Policy Types**: 3 (Secret, Package, CLI)
-- **Example Policies**: 15+
-- **Documentation Pages**: 3 comprehensive guides
-
-## 🔒 Security Considerations
-
-### What's Implemented
-- ✅ Rationale validation
-- ✅ Time-limited access
-- ✅ Audit logging
-- ✅ Policy-based authorization
-- ✅ Encrypted secret storage (via OS keychain)
-
-### Production Requirements
-- 🔄 Enable HTTPS for daemon
-- 🔄 Add JWT authentication
-- 🔄 Set up log rotation
-- 🔄 Configure backup strategy
-- 🔄 Enable monitoring/alerting
-
-## 💡 Design Philosophy
-
-1. **Security by Default**: Deny unless explicitly allowed
-2. **Transparency**: Every action logged and auditable
-3. **Flexibility**: Pluggable backends for any environment
-4. **Simplicity**: Easy to use SDK, complex policies hidden
-5. **Trust but Verify**: Agents explain why they need access
-
-## 🙏 Acknowledgments
-
-This system draws inspiration from:
-- **AWS IAM**: Policy-based access control
-- **Kubernetes RBAC**: Resource-based permissions
-- **HashiCorp Vault**: Secret management patterns
-- **sudo/doas**: Rationale and approval workflows
-
-## 📝 License
-
-Apache 2.0 - Open source and ready for community contributions
 
 ---
 
-**Project Status**: ✅ Core features complete and ready for testing
-
-**Ready for**: Development, testing, and pilot deployments
-
-**Production-ready**: After security hardening and operational setup
-
----
-
-Built with ❤️ for secure, responsible AI agent operations
+**Project Status**: 🟢 Core functionality complete and verified.  
+**Platform**: macOS 12+ (Full Support).  
+**License**: Apache 2.0.
