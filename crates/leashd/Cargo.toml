@@ -1,0 +1,35 @@
+[package]
+name = "leashd"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "leashd"
+path = "src/main.rs"
+
+[dependencies]
+leash-ai-core = { workspace = true }
+leash-ai-api = { workspace = true }
+leash-ai-db = { workspace = true }
+leash-ai-backend = { workspace = true }
+leash-ai-backend-pip = { workspace = true }
+leash-ai-backend-brew = { workspace = true }
+leash-ai-backend-npm = { workspace = true }
+leash-ai-backend-keychain = { workspace = true }
+leash-ai-backend-telegram = { workspace = true }
+leash-ai-venv = { workspace = true }
+tokio = { workspace = true }
+tokio-stream = { workspace = true }
+tonic = { workspace = true }
+prost = { workspace = true }
+prost-types = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+clap = { workspace = true }
+serde = { workspace = true }
+serde_yaml = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+teloxide = { workspace = true }
+anyhow = { workspace = true }
+dptree = "0.3"
