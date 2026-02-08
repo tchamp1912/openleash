@@ -1,0 +1,13 @@
+[package]
+name = "leash-ai-venv"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+leash-ai-core = { workspace = true }
+tokio = { workspace = true, features = ["full"] }
+async-trait = "0.1"
+tracing = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
