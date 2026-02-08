@@ -1,2 +1,0 @@
-cargo:rerun-if-changed=proto/leash/v1/leash.proto
-cargo:rerun-if-changed=proto
