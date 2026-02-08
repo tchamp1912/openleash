@@ -1,3 +1,3 @@
 pub mod pb {
-    tonic::include_proto!("leash.v1");
+    tonic::include_proto!("openleash.v1");
 }
