@@ -18,7 +18,7 @@ This document tracks the implementation progress of all features defined in the 
 | SQLite Persistence Layer | Complete | Async storage using SQLx with automatic migrations. |
 | Unix Domain Socket (UDS) Support | Complete | Secure local IPC for agent-to-daemon communication. |
 | YAML Configuration Schema | Complete | Unified configuration for server, storage, and backends. |
-| Onboarding Wizard (`openopenleash init`) | Complete | Automatic environment scaffolding and profile generation. |
+| Onboarding Wizard (`openleash init`) | Complete | Automatic environment scaffolding and profile generation. |
 
 ## 2. Resource Backends (P0)
 | Feature | Status | Description |
@@ -49,7 +49,7 @@ This document tracks the implementation progress of all features defined in the 
 ## 5. Human-in-the-Loop (P0)
 | Feature | Status | Description |
 | :--- | :---: | :--- |
-| **CLI Approval Management** | Complete | `openopenleash approve {list, grant, deny}` commands. |
+| **CLI Approval Management** | Complete | `openleash approve {list, grant, deny}` commands. |
 | **Telegram Integration** | Complete | Real-time mobile notifications and approval buttons. |
 | Slack Integration | Pending | Pending. |
 | Web UI Dashboard | Pending | Future Milestone. |
@@ -58,9 +58,9 @@ This document tracks the implementation progress of all features defined in the 
 | Feature | Status | Description |
 | :--- | :---: | :--- |
 | **Hash-Chained Audit Ledger** | Complete | Immutable SHA-256 ledger of all daemon actions. |
-| Audit Query CLI (`openopenleash audit`) | Complete | Visibility into the action history. |
+| Audit Query CLI (`openleash audit`) | Complete | Visibility into the action history. |
 | Integrity Verification | Complete | Locally verify the structural integrity of the chain. |
-| Export (JSON/CSV) | In Progress | JSON output implemented for `openopenleash audit list`. |
+| Export (JSON/CSV) | In Progress | JSON output implemented for `openleash audit list`. |
 
 ## 7. Lifecycle & Automation (P1)
 | Feature | Status | Description |

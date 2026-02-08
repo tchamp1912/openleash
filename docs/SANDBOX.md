@@ -17,7 +17,7 @@ OpenLeash provides several tiered sandbox profiles out of the box. You can gener
 
 ## Feature-Aware Permissions
 
-When you run `openopenleash init`, Leash automatically detects your configuration and adds necessary "holes" to the sandbox for your enabled tools:
+When you run `openleash init`, OpenLeash automatically detects your configuration and adds necessary "holes" to the sandbox for your enabled tools:
 
 - **Pip/Python**: Allows execution of `/usr/bin/python3`.
 - **Homebrew**: Allows access to `/opt/homebrew` binaries.
@@ -40,7 +40,7 @@ Or use the provided helper script:
 
 ## Management via CLI
 
-You can list and generate profiles using the `openopenleash sandbox` command:
+You can list and generate profiles using the `openleash sandbox` command:
 
 ```bash
 # List available templates
@@ -50,12 +50,12 @@ openleash sandbox list
 openleash sandbox generate --profile restrictive-closed --output my_secure_agent.sb
 ```
 
-## Anatomy of a Leash Profile
+## Anatomy of an OpenLeash Profile
 
-A Leash-generated profile typically includes:
+An OpenLeash-generated profile typically includes:
 
 1.  **Deny Default**: `(deny default)` - Everything is blocked unless explicitly allowed.
 2.  **System Libs**: Allows reading `/usr/lib`, `/System/Library`, etc.
-3.  **Leash Infrastructure**: Allows talking to `/tmp/openleash.sock` (the daemon).
+3.  **OpenLeash Infrastructure**: Allows talking to `/tmp/openleash.sock` (the daemon).
 4.  **Task Scopes**: Allows full access to `/tmp/openleash-tasks/` (where your virtual environments live).
 5.  **Audit & Logs**: Allows writing to `stdout`/`stderr`.

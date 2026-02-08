@@ -23,7 +23,7 @@ The system is a **Cargo workspace** with a **gRPC API**. The daemon (`openleashd
 *   **Backend traits:** `PackageBackend` (install/uninstall into scope) and `SecretBackend` (get/store). Implementations: pip, npm, brew, keychain; Telegram backend for notifications/approval is present in the workspace.
 *   **openleash-venv:** Manages isolated scopes (venv, optional portable brew, NPM prefix) per task.
 *   **openleash-db:** SQLite persistence for tasks, leases, and audit events.
-*   **leash:** CLI for task/request operations and `openopenleash exec` (run a command with secrets injected into the environment).
+*   **openleash:** CLI for task/request operations and `openleash exec` (run a command with secrets injected into the environment).
 
 ## Crate Layout
 
@@ -41,7 +41,7 @@ The system is a **Cargo workspace** with a **gRPC API**. The daemon (`openleashd
 | openleash-backend-telegram | Telegram integration (notifications/approval). |
 | openleash-client | Async Rust SDK (UDS and TCP). |
 | openleashd | Daemon: RequestService, TaskService, backends, DB. |
-| leash | CLI: tasks, requests, exec. |
+| openleash | CLI: tasks, requests, exec. |
 
 ## Building and Running
 
@@ -66,10 +66,10 @@ Default: gRPC on `127.0.0.1:50051` and Unix Domain Socket at `/tmp/openleash.soc
 ### Run the CLI
 
 ```bash
-cargo run -p leash -- [subcommand]
+cargo run -p openleash -- [subcommand]
 ```
 
-Examples: task start/end, request install/secret, `openopenleash exec` with secret injection.
+Examples: task start/end, request install/secret, `openleash exec` with secret injection.
 
 ### Storing secrets (macOS Keychain)
 

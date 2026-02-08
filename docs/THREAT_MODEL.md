@@ -48,7 +48,7 @@ This document identifying security threats to OpenLeash and describes mitigation
 **T-001: Audit Log Manipulation**
 - **Description**: Attacker deletes log entries to hide malicious activity.
 - **Impact**: Loss of accountability.
-- **Mitigation**: **Hash-Chained Integrity**. Every log entry is chained to the previous one using SHA-256. `openopenleash audit verify` detects any gaps or alterations in the history.
+- **Mitigation**: **Hash-Chained Integrity**. Every log entry is chained to the previous one using SHA-256. `openleash audit verify` detects any gaps or alterations in the history.
 
 **T-002: Policy Bypass**
 - **Description**: Attacker modifies the local YAML policy file.

@@ -18,7 +18,7 @@ This command creates a `~/.openleash` directory containing:
 
 ## Step 2: Configure a Strict Policy
 
-Open `~/.openleash/policies.yaml`. By default, it allows everything. Let's make it strict to see Leash in action.
+Open `~/.openleash/policies.yaml`. By default, it allows everything. Let's make it strict to see OpenLeash in action.
 
 Replace the content with this:
 
@@ -46,7 +46,7 @@ Try to install a package while inside the sandbox. It should fail because our po
 
 ```bash
 # Run the openleash client inside the macOS sandbox
-sandbox-exec -f ~/.openleash/agent.sb openleash request install --manager pip --package requests --scope /tmp/test-scope --reason "testing"
+sandbox-exec -f ~/.openleash/agent.sb openleash request install --manager pip --package requests --task-id <TASK_ID> --reason "testing"
 ```
 
 You should see a **Permission Denied** error. This confirms that your agent is properly secured.
@@ -88,10 +88,11 @@ Now, let's run a full mission.
 3.  **Run the Agent**:
     ```bash
     # Brokered execution: the daemon runs the command and streams output
-    openleash run --task-id <TASK_ID> --reason "running scraper" -- python my_scraper.py
+    eval $(openleash run --task-id <TASK_ID>)
+    python my_scraper.py
     ```
 
-    *Note: `openopenleash run` is different from `openopenleash exec`. `run` happens via the daemon (allowing the daemon to enforce strict command-level policies), whereas `exec` happens locally but with injected secrets.*
+    *Note: `openleash run` is different from `openleash exec`. `run` returns PATH for direct execution in the sandbox, whereas `exec` executes a command locally with injected secrets.*
 
 4.  **Cleanup**:
     ```bash

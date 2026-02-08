@@ -3,24 +3,24 @@
 ## Current Model (Pure Resource Broker)
 
 ### How It Works Now
-1. **`leash exec`**: Fetches secrets → executes command locally (no validation)
-2. **`leash run`**: Returns PATH → agent executes directly (no validation)
+1. **`openleash exec`**: Fetches secrets → executes command locally (no validation)
+2. **`openleash run`**: Returns PATH → agent executes directly (no validation)
 3. **Agent**: Executes commands directly in sandbox
 4. **Security**: Relies entirely on sandbox restrictions
 
 ### Current Security Posture
 - [YES] **Sandbox Gap**: Agent can't access system resources without daemon
 - [YES] **Package Isolation**: Packages installed in task scope
-- [YES] **Secret Protection**: Secrets injected via `leash exec`, never touch disk
+- [YES] **Secret Protection**: Secrets injected via `openleash exec`, never touch disk
 - [NO] **No Command Control**: Any command can be executed (within sandbox limits)
 - [NO] **No Audit Trail**: Commands executed directly aren't logged/audited
 
 ## Proposed Model (Command Validation)
 
 ### How It Would Work
-1. **Option A - Validation in `leash exec`**:
+1. **Option A - Validation in `openleash exec`**:
    ```rust
-   // In leash exec
+   // In openleash exec
    let cmd_name = parse_command(&command[0])?;
    let decision = policy_engine.evaluate(ResourceType::Command, cmd_name)?;
    match decision {
@@ -45,7 +45,7 @@
 **Technical Feasibility:**
 - [YES] `shlex` can parse simple commands reliably
 - [YES] Policy engine already supports regex matching
-- [YES] Can integrate into `leash exec` easily
+- [YES] Can integrate into `openleash exec` easily
 - [YES] Can add `RequestCommand` API
 
 **Limitations:**

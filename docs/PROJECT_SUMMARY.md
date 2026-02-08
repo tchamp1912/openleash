@@ -14,7 +14,7 @@ OpenLeash is a comprehensive, production-ready permission and access management 
 
 ### Core Framework (Rust)
 - **Unified Daemon (`openleashd`)**: Managed state machine for all requests, tasks, and audit logs.
-- **Async SDK (`openleash-client`)**: Developer-friendly library for integrating Leash into any AI agent framework.
+- **Async SDK (`openleash-client`)**: Developer-friendly library for integrating OpenLeash into any AI agent framework.
 - **Management CLI (`openleash`)**: Powerful toolkit for environment initialization, manual approvals, and audit verification.
 
 ### Security Infrastructure
@@ -52,7 +52,8 @@ openleashd &
 
 # 3. Run a sandboxed mission
 openleash task start --name "Research"
-openleash run --task-id <ID> --reason "data analysis" -- python3 -c "print('Leashed!')"
+eval $(openleash run --task-id <ID>)
+python3 -c "print('Leashed!')"
 ```
 
 ---

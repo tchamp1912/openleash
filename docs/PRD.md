@@ -638,7 +638,7 @@ pip install openleash
 openleash start
 
 # 3. Load example policies (1 minute)
-leash policy add https://raw.githubusercontent.com/openclaw/openleash/main/examples/policies/quickstart.yaml
+openleash policy add https://raw.githubusercontent.com/openclaw/openleash/main/examples/policies/quickstart.yaml
 
 # 4. Test (1 minute)
 python examples/quickstart.py

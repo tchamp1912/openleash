@@ -94,7 +94,7 @@ The token will be a JSON Web Token (JWT) with the following claims in its payloa
 {
   "iss": "openleashd",                          // Issuer (the daemon)
   "sub": "instance:openclaw-prod-123",      // Subject (the agent instance)
-  "aud": "leash-backend:packages",          // Audience (the package backend)
+  "aud": "openleash-backend:packages",          // Audience (the package backend)
   "jti": "uuid-v4-string",                  // JWT ID (for one-time use)
   "iat": 1675790000,                        // Issued At
   "nbf": 1675790000,                        // Not Before

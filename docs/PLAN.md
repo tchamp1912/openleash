@@ -6,11 +6,11 @@ All implementation details MUST adhere to the specifications laid out in [CORE_S
 
 ## v0 Scope: Scoped Package Management
 
-The initial implementation (v0) will focus exclusively on the **scoped package installation** use case. The primary goal is to deliver a robust and secure `openopenleash request install` flow.
+The initial implementation (v0) will focus exclusively on the **scoped package installation** use case. The primary goal is to deliver a robust and secure `openleash request install` flow.
 
 *   **Priority 1:** `pip` installations into a dedicated `.venv`.
 *   **Priority 2:** `npm` installations into a project-local `node_modules`.
-*   **Out of Scope for v0:** Secret management, general command execution (`openopenleash exec`), Homebrew. These will be addressed in future milestones.
+*   **Out of Scope for v0:** Secret management, general command execution (`openleash exec`), Homebrew. These will be addressed in future milestones.
 
 ## Guiding Principle: Parallel Development
 
@@ -86,7 +86,7 @@ Once Phase 1 is complete, these workstreams can be developed largely in parallel
 *   **Outputs:**
     *   A binary crate `openleash`.
     *   The agent-facing `request install` subcommand.
-    *   Admin-facing subcommands for `openleash policy` and `openopenleash audit`.
+    *   Admin-facing subcommands for `openleash policy` and `openleash audit`.
 *   **Dependencies:** `openleash-client`, `clap`.
 
 ---

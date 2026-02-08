@@ -141,7 +141,7 @@ Create a new `Command` resource type that validates commands before execution. T
 
 ### Implementation Plan
 
-1. Add `shlex` dependency to `leash-ai-core`
+1. Add `shlex` dependency to `openleash-core`
 2. Add `Command` back to `ResourceType` enum
 3. Create `validate_command()` function that:
    - Parses command string
@@ -149,7 +149,7 @@ Create a new `Command` resource type that validates commands before execution. T
    - Checks against policies
    - Returns `Decision`
 4. Add `RequestCommand` API (optional - could also validate inline)
-5. Update `leash run` to validate commands before returning PATH
+5. Update `openleash run` to validate commands before returning PATH
 
 ### Example Policy
 
